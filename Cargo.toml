@@ -15,3 +15,4 @@ log = "0.4.17"
 ethers = { git = "https://github.com/gakonst/ethers-rs" }
 tokio-test = "0.4.2"
 utoipa = { version = "2", features = ["axum_extras"] }
+dotenv = "0.15.0"
