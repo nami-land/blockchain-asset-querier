@@ -662,7 +662,7 @@ source = "git+https://github.com/gakonst/ethers-rs#162e0de27a1a210ee4000c09f493a
 dependencies = [
  "ethers-addressbook",
  "ethers-contract",
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "ethers-etherscan",
  "ethers-middleware",
  "ethers-providers",
@@ -674,7 +674,7 @@ name = "ethers-addressbook"
 version = "0.17.0"
 source = "git+https://github.com/gakonst/ethers-rs#162e0de27a1a210ee4000c09f493a5f0c3f0224a"
 dependencies = [
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "once_cell",
  "serde",
  "serde_json",
@@ -687,7 +687,7 @@ source = "git+https://github.com/gakonst/ethers-rs#162e0de27a1a210ee4000c09f493a
 dependencies = [
  "ethers-contract-abigen",
  "ethers-contract-derive",
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "ethers-providers",
  "futures-util",
  "hex",
@@ -706,7 +706,7 @@ dependencies = [
  "Inflector",
  "cfg-if",
  "dunce",
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "eyre",
  "getrandom",
  "hex",
@@ -727,12 +727,39 @@ version = "0.17.0"
 source = "git+https://github.com/gakonst/ethers-rs#162e0de27a1a210ee4000c09f493a5f0c3f0224a"
 dependencies = [
  "ethers-contract-abigen",
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "hex",
  "proc-macro2",
  "quote",
  "serde_json",
  "syn",
+]
+
+[[package]]
+name = "ethers-core"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0ebdd63c828f58aa067f40f9adcbea5e114fb1f90144b3a1e2858e0c9b1ff4e8"
+dependencies = [
+ "arrayvec",
+ "bytes",
+ "chrono",
+ "elliptic-curve",
+ "ethabi",
+ "fastrlp",
+ "generic-array 0.14.6",
+ "hex",
+ "k256",
+ "rand",
+ "rlp",
+ "rlp-derive",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "strum",
+ "thiserror",
+ "tiny-keccak",
+ "unicode-xid",
 ]
 
 [[package]]
@@ -771,7 +798,7 @@ name = "ethers-etherscan"
 version = "0.17.0"
 source = "git+https://github.com/gakonst/ethers-rs#162e0de27a1a210ee4000c09f493a5f0c3f0224a"
 dependencies = [
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "getrandom",
  "reqwest",
  "semver",
@@ -790,7 +817,7 @@ dependencies = [
  "async-trait",
  "auto_impl 0.5.0",
  "ethers-contract",
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "ethers-etherscan",
  "ethers-providers",
  "ethers-signers",
@@ -815,7 +842,7 @@ dependencies = [
  "async-trait",
  "auto_impl 1.0.1",
  "base64 0.13.0",
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "futures-core",
  "futures-timer",
  "futures-util",
@@ -851,7 +878,7 @@ dependencies = [
  "coins-bip39",
  "elliptic-curve",
  "eth-keystore",
- "ethers-core",
+ "ethers-core 0.17.0 (git+https://github.com/gakonst/ethers-rs)",
  "hex",
  "rand",
  "sha2 0.10.5",
@@ -1435,6 +1462,7 @@ dependencies = [
  "axum",
  "dotenv",
  "ethers",
+ "ethers-core 0.17.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "log",
  "serde",
  "serde_json",
