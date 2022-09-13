@@ -12,8 +12,12 @@ use common::{
     contracts::AddressManager,
     defines::{NetworkType, SupportedERC20Token},
 };
-use ethers::abi::Abi;
 use ethers::contract::Contract;
+use ethers::{
+    abi::Abi,
+    signers::{LocalWallet, Signer},
+    utils::Anvil,
+};
 use ethers::{
     prelude::{abigen, SignerMiddleware},
     providers::{Http, Provider},
@@ -31,6 +35,11 @@ async fn main() -> Result<(), Error> {
 
     let bsc_main_client = Provider::<Http>::try_from(BSC_MAIN_NETWORK_RPC).unwrap();
     let bsc_test_client = Provider::<Http>::try_from(BSC_TEST_NETWORK_RPC).unwrap();
+    // launch anvil
+    // let anvil = Anvil::new().spawn();
+    // let wallet: LocalWallet = anvil.keys()[0].clone().into();
+    // let client = SignerMiddleware::new(bsc_main_client, wallet.with_chain_id(anvil.chain_id()));
+    let client = Arc::new(bsc_test_client);
 
     let abi_str = fs::read_to_string("./src/abis/erc20.json").unwrap();
     let abi: Abi = serde_json::from_str(&abi_str).unwrap();
@@ -41,10 +50,13 @@ async fn main() -> Result<(), Error> {
             NetworkType::BSCTestNetwork,
         )
         .unwrap();
-    let contract = Contract::new(address, abi, bsc_test_client);
+    let contract = Contract::new(address, abi, client.clone().as_ref().to_owned());
+    // read symbol from contract
+    let symbol = contract.method::<_, String>("symbol", ())?.call().await;
+    println!("symbol is {}", symbol.unwrap());
 
-    let symbol: String = contract.method::<_, String>("symbol", ())?.call().await?;
-    println!("symbol is {}", symbol);
+    let erc20_contract = ERC20Contract::new(address, client.clone());
+    println!("symbol is {}", erc20_contract.symbol().call().await?);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8888));
     println!("web server is listening on {}", addr);

@@ -1,2 +1,2 @@
-pub mod defines;
 pub mod contracts;
+pub mod defines;
