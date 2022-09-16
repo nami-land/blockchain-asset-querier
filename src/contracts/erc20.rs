@@ -26,7 +26,7 @@ impl ERC20 {
             .get_provider(NetworkType::BSCTestNetwork)
             .expect("get provider failed");
         let address = AddressManager::default()
-            .get_contract_address(contract_type, network)
+            .get_contract_address(&contract_type, &network)
             .expect("get contract address failed");
         let contract = ERC20Contract::new(address, client.clone());
         ERC20 { contract }

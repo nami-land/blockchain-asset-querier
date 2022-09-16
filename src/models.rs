@@ -1,10 +1,12 @@
 use crate::common::defines::NetworkType;
 
+#[derive(Debug, Clone)]
 pub struct NecoNFTTrait {
     trait_type: String,
     value: String,
 }
 
+#[derive(Debug, Clone, Default)]
 pub struct NecoNFTMetadata {
     id: String,
     name: String,
@@ -24,8 +26,8 @@ pub struct OwnershipItem {
 }
 
 pub struct NecoNFTOwnership {
-    public_address: String,
-    network: NetworkType,
-    contract_address: String,
-    ownerships: Vec<OwnershipItem>,
+    pub public_address: String,
+    pub network: NetworkType,
+    pub contract_address: String,
+    pub ownerships: Vec<OwnershipItem>,
 }

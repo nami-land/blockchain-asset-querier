@@ -11,8 +11,8 @@ pub struct AddressManager {}
 impl AddressManager {
     pub fn get_contract_address(
         &self,
-        contract_type: ContractType,
-        network_type: NetworkType,
+        contract_type: &ContractType,
+        network_type: &NetworkType,
     ) -> Result<Address, Error> {
         match contract_type {
             ContractType::BUSD => match network_type {

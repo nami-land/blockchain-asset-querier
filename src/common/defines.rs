@@ -5,7 +5,7 @@ use std::fmt::Formatter;
 pub type Error = Box<dyn std::error::Error + Sync + Send>;
 
 // define a enum for the blockchain type.
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub enum NetworkType {
     BSCMainNetwork,
     BSCTestNetwork,
