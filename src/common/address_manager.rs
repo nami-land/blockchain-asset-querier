@@ -58,31 +58,3 @@ impl AddressManager {
         }
     }
 }
-
-#[derive(Debug, Default)]
-struct AbiManager {}
-
-// impl AbiManager {
-//     fn get_contract_abi(&self, contract_type: SupportedContract) -> Result<Abi, Error> {
-//         match contract_type {
-//             SupportedContract::BUSDTokenContract => {
-//                 abigen!(
-//                     BUSDToken,
-//                     "./abis/erc20.json",
-//                 )
-//             },
-//             SupportedContract::NFISHTokenContract => {
-
-//             }
-//             SupportedContract::NECOTokenContract => {
-
-//             }
-//             SupportedContract::NecoNFTContract => {
-
-//             }
-//             SupportedContract::StakeNecoForFeeContract => {
-
-//             }
-//         }
-//     }
-// }

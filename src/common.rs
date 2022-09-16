@@ -1,3 +1,3 @@
-pub mod contracts;
+pub mod address_manager;
 pub mod defines;
-pub mod managers;
+pub mod provider_manager;
