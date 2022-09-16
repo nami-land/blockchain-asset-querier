@@ -8,18 +8,12 @@ use crate::common::defines::{
     Error, SupportedContract, BSC_MAIN_NETWORK_RPC, BSC_TEST_NETWORK_RPC,
 };
 use axum::{routing::get, Router};
-use common::{
-    contracts::AddressManager,
-    defines::{NetworkType, SupportedERC20Token},
-};
+use common::managers::ProviderManager;
+use common::{contracts::AddressManager, defines::NetworkType};
+use ethers::abi::Abi;
 use ethers::contract::Contract;
 use ethers::{
-    abi::Abi,
-    signers::{LocalWallet, Signer},
-    utils::Anvil,
-};
-use ethers::{
-    prelude::{abigen, SignerMiddleware},
+    prelude::abigen,
     providers::{Http, Provider},
 };
 
@@ -35,11 +29,15 @@ async fn main() -> Result<(), Error> {
 
     let bsc_main_client = Provider::<Http>::try_from(BSC_MAIN_NETWORK_RPC).unwrap();
     let bsc_test_client = Provider::<Http>::try_from(BSC_TEST_NETWORK_RPC).unwrap();
-    // launch anvil
-    // let anvil = Anvil::new().spawn();
-    // let wallet: LocalWallet = anvil.keys()[0].clone().into();
-    // let client = SignerMiddleware::new(bsc_main_client, wallet.with_chain_id(anvil.chain_id()));
-    let client = Arc::new(bsc_test_client);
+
+    ProviderManager::instance().set_provider(NetworkType::BSCMainNetwork, bsc_main_client);
+    ProviderManager::instance().set_provider(NetworkType::BSCTestNetwork, bsc_test_client);
+
+    let client = Arc::new(
+        ProviderManager::instance()
+            .get_provider(NetworkType::BSCTestNetwork)
+            .expect("get provider failed"),
+    );
 
     let abi_str = fs::read_to_string("./src/abis/erc20.json").unwrap();
     let abi: Abi = serde_json::from_str(&abi_str).unwrap();
@@ -50,10 +48,10 @@ async fn main() -> Result<(), Error> {
             NetworkType::BSCTestNetwork,
         )
         .unwrap();
-    let contract = Contract::new(address, abi, client.clone().as_ref().to_owned());
-    // read symbol from contract
-    let symbol = contract.method::<_, String>("symbol", ())?.call().await;
-    println!("symbol is {}", symbol.unwrap());
+    // let contract = Contract::new(address, abi, client.clone().as_ref().to_owned());
+    // // read symbol from contract
+    // let symbol = contract.method::<_, String>("symbol", ())?.call().await;
+    // println!("symbol is {}", symbol.unwrap());
 
     let erc20_contract = ERC20Contract::new(address, client.clone());
     println!("symbol is {}", erc20_contract.symbol().call().await?);
