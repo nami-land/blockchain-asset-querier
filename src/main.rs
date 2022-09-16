@@ -1,5 +1,7 @@
 mod common;
 mod contracts;
+mod models;
+
 use crate::common::defines::{ContractType, Error, BSC_MAIN_NETWORK_RPC, BSC_TEST_NETWORK_RPC};
 use crate::contracts::erc20::ERC20;
 use axum::{routing::get, Router};
