@@ -1,13 +1,15 @@
-use super::defines::{Error, NetworkType};
+use super::defines::NetworkType;
 use ethers::providers::Http;
-use ethers_core::k256::pkcs8::der::oid::Arc;
 use once_cell::sync::OnceCell;
-use std::{cell::RefCell, collections::HashMap, sync::Mutex};
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
 
 type MyProvider = ethers::providers::Provider<Http>;
 
 pub struct ProviderManager {
-    pub providers: Mutex<RefCell<HashMap<NetworkType, MyProvider>>>,
+    pub providers: Mutex<HashMap<NetworkType, Arc<MyProvider>>>,
 }
 
 static INSTANCE: OnceCell<ProviderManager> = OnceCell::new();
@@ -15,7 +17,7 @@ static INSTANCE: OnceCell<ProviderManager> = OnceCell::new();
 impl ProviderManager {
     pub fn instance() -> &'static ProviderManager {
         INSTANCE.get_or_init(|| ProviderManager {
-            providers: Mutex::new(RefCell::new(HashMap::new())),
+            providers: Mutex::new(HashMap::new()),
         })
     }
 
@@ -23,14 +25,13 @@ impl ProviderManager {
         self.providers
             .lock()
             .unwrap()
-            .borrow_mut()
-            .insert(network_type, provider);
+            .insert(network_type, Arc::new(provider));
     }
 
-    pub fn get_provider(&self, network_type: NetworkType) -> Option<MyProvider> {
-        let provider = (*self.providers.lock().unwrap().borrow())
+    pub fn get_provider(&self, network_type: NetworkType) -> Option<Arc<MyProvider>> {
+        let provider = (*self.providers.lock().unwrap())
             .get(&network_type)?
             .to_owned();
-        Some(provider)
+        Some(provider.clone())
     }
 }

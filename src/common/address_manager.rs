@@ -1,4 +1,4 @@
-use super::defines::{Error, NetworkType, SupportedContract};
+use super::defines::{ContractType, Error, NetworkType};
 use ethers::prelude::abigen;
 use ethers_core::{
     abi::Abi,
@@ -11,11 +11,11 @@ pub struct AddressManager {}
 impl AddressManager {
     pub fn get_contract_address(
         &self,
-        contract_type: SupportedContract,
+        contract_type: ContractType,
         network_type: NetworkType,
     ) -> Result<Address, Error> {
         match contract_type {
-            SupportedContract::BUSDTokenContract => match network_type {
+            ContractType::BUSDTokenContract => match network_type {
                 NetworkType::BSCMainNetwork => {
                     Ok("0x2D6C8229E1e14F4D35037F977e5486EE1Bfa0190".parse::<Address>()?)
                 }
@@ -23,7 +23,7 @@ impl AddressManager {
                     Ok("0x2D6C8229E1e14F4D35037F977e5486EE1Bfa0190".parse::<Address>()?)
                 }
             },
-            SupportedContract::NECOTokenContract => match network_type {
+            ContractType::NECOTokenContract => match network_type {
                 NetworkType::BSCMainNetwork => {
                     Ok("0xd23891FC1A515A88C571064637502e3766819e2d".parse::<Address>()?)
                 }
@@ -31,7 +31,7 @@ impl AddressManager {
                     Ok("0xafA98d54481a9aE468AB21b9268609fF50795795".parse::<Address>()?)
                 }
             },
-            SupportedContract::NFISHTokenContract => match network_type {
+            ContractType::NFISHTokenContract => match network_type {
                 NetworkType::BSCMainNetwork => {
                     Ok("0xa0c72B1F89531b6BD61C640d03Bd4507773C0cfC".parse::<Address>()?)
                 }
@@ -39,7 +39,7 @@ impl AddressManager {
                     Ok("0xa0c72B1F89531b6BD61C640d03Bd4507773C0cfC".parse::<Address>()?)
                 }
             },
-            SupportedContract::NecoNFTContract => match network_type {
+            ContractType::NecoNFTContract => match network_type {
                 NetworkType::BSCMainNetwork => {
                     Ok("0xEA5534Bac1291676595223579517D35Ad9C382eE".parse::<Address>()?)
                 }
@@ -47,7 +47,7 @@ impl AddressManager {
                     Ok("0xEB1C424A31490A9B141126838a3c625647f22BDc".parse::<Address>()?)
                 }
             },
-            SupportedContract::StakeNecoForFeeContract => match network_type {
+            ContractType::StakeNecoForFeeContract => match network_type {
                 NetworkType::BSCMainNetwork => {
                     Ok("0x8bfB9140658632239f8a1450955cB5bD7Ce586ED".parse::<Address>()?)
                 }

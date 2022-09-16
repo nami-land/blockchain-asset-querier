@@ -21,6 +21,13 @@ async fn main() -> Result<(), Error> {
     let neco = NECO::new(NetworkType::BSCTestNetwork);
     println!("{}", neco.get_symbol().await?);
 
+    println!(
+        "{}",
+        neco.get_balance("0x04a6ae789f1993590268F882F34308E00f9082f9")
+            .await?
+            .to_string()
+    );
+
     let addr = SocketAddr::from(([127, 0, 0, 1], 8888));
     println!("web server is listening on {}", addr);
     axum::Server::bind(&addr)
