@@ -1,7 +1,7 @@
 mod common;
 mod contracts;
-use crate::common::defines::{Error, BSC_MAIN_NETWORK_RPC, BSC_TEST_NETWORK_RPC};
-use crate::contracts::neco::NECO;
+use crate::common::defines::{ContractType, Error, BSC_MAIN_NETWORK_RPC, BSC_TEST_NETWORK_RPC};
+use crate::contracts::erc20::ERC20;
 use axum::{routing::get, Router};
 use common::defines::NetworkType;
 use common::provider_manager::ProviderManager;
@@ -18,7 +18,7 @@ async fn main() -> Result<(), Error> {
     ProviderManager::instance().set_provider(NetworkType::BSCMainNetwork, bsc_main_client);
     ProviderManager::instance().set_provider(NetworkType::BSCTestNetwork, bsc_test_client);
 
-    let neco = NECO::new(NetworkType::BSCTestNetwork);
+    let neco = ERC20::new(ContractType::NECO, NetworkType::BSCTestNetwork);
     println!("{}", neco.get_symbol().await?);
 
     println!(

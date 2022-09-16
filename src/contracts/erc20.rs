@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::common::{
     address_manager::AddressManager,
     defines::{ContractType, Error, NetworkType},
@@ -12,30 +10,30 @@ use ethers::{
 };
 
 abigen!(
-    NECOContract,
+    ERC20Contract,
     "./src/abis/erc20.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
 #[derive(Debug)]
-pub struct NECO {
-    contract: NECOContract<Provider<Http>>,
+pub struct ERC20 {
+    contract: ERC20Contract<Provider<Http>>,
 }
 
-impl NECO {
-    pub fn new(network: NetworkType) -> NECO {
+impl ERC20 {
+    pub fn new(contract_type: ContractType, network: NetworkType) -> ERC20 {
         let client = ProviderManager::instance()
             .get_provider(NetworkType::BSCTestNetwork)
             .expect("get provider failed");
         let address = AddressManager::default()
-            .get_contract_address(ContractType::NECOTokenContract, network)
+            .get_contract_address(contract_type, network)
             .expect("get contract address failed");
-        let contract = NECOContract::new(address, client.clone());
-        NECO { contract }
+        let contract = ERC20Contract::new(address, client.clone());
+        ERC20 { contract }
     }
 }
 
-impl NECO {
+impl ERC20 {
     pub async fn get_symbol(&self) -> Result<String, Error> {
         Ok(self.contract.symbol().call().await?)
     }

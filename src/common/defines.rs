@@ -63,9 +63,9 @@ pub const BSC_TEST_NETWORK_RPC: &str = "https://data-seed-prebsc-1-s3.binance.or
 
 #[derive(Debug)]
 pub enum ContractType {
-    NECOTokenContract,
-    NFISHTokenContract,
-    BUSDTokenContract,
-    NecoNFTContract,
-    StakeNecoForFeeContract,
+    NECO,
+    NFISH,
+    BUSD,
+    NecoNFT,
+    StakeNecoForFee,
 }
