@@ -184,7 +184,6 @@ impl NecoNFT {
 
 #[cfg(test)]
 mod tests {
-
     use crate::{common::defines::ContractType, contracts::neco_nft::NecoNFT};
     use ethers::types::U256;
 
