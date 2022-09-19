@@ -4,10 +4,12 @@ mod models;
 
 use crate::common::defines::{ContractType, Error, BSC_MAIN_NETWORK_RPC, BSC_TEST_NETWORK_RPC};
 use crate::contracts::erc20::ERC20;
+use crate::contracts::neco_nft::NecoNFT;
 use axum::{routing::get, Router};
 use common::defines::NetworkType;
 use common::provider_manager::ProviderManager;
 use ethers::providers::{Http, Provider};
+use ethers::types::U256;
 use std::net::SocketAddr;
 
 #[tokio::main]
@@ -29,6 +31,16 @@ async fn main() -> Result<(), Error> {
             .await?
             .to_string()
     );
+
+    let neco_nft = NecoNFT::new(NetworkType::BSCTestNetwork);
+    let metadata = neco_nft
+        .get_nft_ownership(
+            "0x04a6ae789f1993590268F882F34308E00f9082f9",
+            &common::defines::GameClient::NecoFishing,
+            &NetworkType::BSCTestNetwork,
+        )
+        .await?;
+    println!("metadata is {:?}", metadata);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8888));
     println!("web server is listening on {}", addr);

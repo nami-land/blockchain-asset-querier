@@ -1,14 +1,21 @@
 use ethers::abi::Uint;
+use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Formatter;
 
 pub type Error = Box<dyn std::error::Error + Sync + Send>;
 
 // define a enum for the blockchain type.
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Serialize, Deserialize)]
 pub enum NetworkType {
     BSCMainNetwork,
     BSCTestNetwork,
+}
+
+impl std::default::Default for NetworkType {
+    fn default() -> Self {
+        return NetworkType::BSCTestNetwork;
+    }
 }
 
 // implement the Display trait to convert enum to a string.
@@ -50,7 +57,7 @@ impl fmt::Display for SupportedERC20Token {
 }
 
 // All supported nft ids for neco fishing game.
-const NECO_FISHING_NFT_IDS: [u32; 57] = [
+pub const NECO_FISHING_NFT_IDS: [u32; 57] = [
     10001, 10002, 10003, 10004, 10005, 10006, 10007, 11001, 11002, 11003, 11004, 11005, 11006,
     11007, 12001, 12002, 12003, 13001, 13002, 13003, 13004, 13005, 13006, 14001, 14002, 15001,
     15002, 15003, 15004, 15005, 15006, 15007, 15008, 15009, 15010, 15011, 15012, 15013, 15014,
