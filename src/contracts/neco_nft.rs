@@ -131,12 +131,12 @@ impl NecoNFT {
         let mut ownership_items: Vec<OwnershipItem> = vec![];
         for _ in 0..ids.len() {
             if let Some(ownership_item) = rx.recv().await {
-                println!("{:?}", ownership_item);
                 if ownership_item.amount != 0 {
                     ownership_items.push(ownership_item);
                 }
             }
         }
+        ownership_items.sort_by(|a, b| a.nft_id.cmp(&b.nft_id));
         Ok(ownership_items)
     }
 

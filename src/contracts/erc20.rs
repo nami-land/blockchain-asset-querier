@@ -1,3 +1,5 @@
+use std::string;
+
 use crate::common::{
     address_manager::AddressManager,
     defines::{ContractType, Error, NetworkType},
@@ -36,6 +38,10 @@ impl ERC20 {
 impl ERC20 {
     pub async fn get_symbol(&self) -> Result<String, Error> {
         Ok(self.contract.symbol().call().await?)
+    }
+
+    pub async fn get_decimal(&self) -> Result<u8, Error> {
+        Ok(self.contract.decimals().call().await?)
     }
 
     pub async fn get_balance(&self, account: &str) -> Result<U256, Error> {

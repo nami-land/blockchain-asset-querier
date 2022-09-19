@@ -2,6 +2,20 @@ use serde::{Deserialize, Serialize};
 
 use crate::common::defines::NetworkType;
 
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct ERC20Token {
+    pub symbol: String,
+    pub decimal: u8,
+    pub amount: String,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct NECOStakedInfo {
+    pub public_address: String,
+    pub staked_amount: String,
+    pub staked_time: String,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NecoNFTTrait {
     pub trait_type: String,
