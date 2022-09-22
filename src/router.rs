@@ -1,6 +1,12 @@
-use axum::{extract::Path, response::IntoResponse, routing::get, Json, Router};
+use axum::{
+    extract::Path,
+    response::{IntoResponse, Response},
+    routing::get,
+    Json, Router,
+};
 use ethers::types::U256;
 use reqwest::StatusCode;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     common::{
@@ -73,21 +79,18 @@ async fn get_nft_ownership() -> impl IntoResponse {
 // get neco staked info by public address
 async fn get_neco_staked_info(
     Path((network, public_address)): Path<(u8, String)>,
-) -> impl IntoResponse {
+) -> Json<NecoResult<NECOStakedInfo>> {
     println!("public_address: {}", public_address);
     println!("network: {:?}", network);
     let network = match network {
         0 => NetworkType::BSCMainNetwork,
         1 => NetworkType::BSCTestNetwork,
         _ => {
-            return (
-                StatusCode::BAD_REQUEST,
-                Json(NECOStakedInfo {
-                    public_address: "".to_string(),
-                    staked_amount: "".to_string(),
-                    staked_time: "".to_string(),
-                }),
-            )
+            return Json(NecoResult {
+                status: StatusCode::BAD_REQUEST.as_u16(),
+                message: "network type error".to_string(),
+                data: None,
+            });
         }
     };
     let staked_amount = NecoStake::new(network)
@@ -99,12 +102,20 @@ async fn get_neco_staked_info(
         .await
         .unwrap_or_else(|_| U256::from(0));
 
-    (
-        StatusCode::OK,
-        Json(NECOStakedInfo {
+    Json(NecoResult {
+        status: StatusCode::OK.as_u16(),
+        message: "network type error".to_string(),
+        data: Some(NECOStakedInfo {
             public_address,
             staked_amount: staked_amount.to_string(),
             staked_time: staked_time.to_string(),
         }),
-    )
+    })
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NecoResult<T: Serialize> {
+    status: u16,
+    message: String,
+    data: Option<T>,
 }
