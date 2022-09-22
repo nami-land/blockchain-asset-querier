@@ -25,7 +25,7 @@ pub struct ERC20 {
 impl ERC20 {
     pub fn new(contract_type: ContractType, network: NetworkType) -> ERC20 {
         let client = ProviderManager::instance()
-            .get_provider(NetworkType::BSCTestNetwork)
+            .get_provider(network)
             .expect("get provider failed");
         let address = AddressManager::default()
             .get_contract_address(&contract_type, &network)

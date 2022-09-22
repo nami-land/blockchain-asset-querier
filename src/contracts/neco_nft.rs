@@ -39,7 +39,7 @@ pub struct NecoNFT {
 impl NecoNFT {
     pub fn new(network: NetworkType) -> NecoNFT {
         let client = ProviderManager::instance()
-            .get_provider(NetworkType::BSCTestNetwork)
+            .get_provider(network)
             .expect("get provider failed");
         let address = AddressManager::default()
             .get_contract_address(&ContractType::NecoNFT, &network)
@@ -60,7 +60,6 @@ impl NecoNFT {
             .get_contract_address(&ContractType::NecoNFT, network)?
             .to_string();
         let ownership_items = self.get_ownership_items(public_address, game).await?;
-
         Ok(NecoNFTOwnership {
             public_address: public_address.to_owned(),
             network: network.to_owned(),
@@ -93,7 +92,7 @@ impl NecoNFT {
                     .contract
                     .balance_of(
                         address.clone(),
-                        U256::from_dec_str(nft_id.to_string().as_str()).unwrap(),
+                        U256::from_dec_str(&nft_id.to_string()).unwrap(),
                     )
                     .call()
                     .await
@@ -111,9 +110,7 @@ impl NecoNFT {
                 } else {
                     let metadata = (*neco_nft_copy)
                         .borrow()
-                        .get_metadata_by_id(
-                            &U256::from_dec_str(nft_id.to_string().as_str()).unwrap(),
-                        )
+                        .get_metadata_by_id(&U256::from_dec_str(&nft_id.to_string()).unwrap())
                         .await
                         .unwrap_or_else(|_| NecoNFTMetadata::default());
                     tx_copy

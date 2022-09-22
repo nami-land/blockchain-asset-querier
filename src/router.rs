@@ -68,7 +68,7 @@ async fn get_erc20_balance(
         .await
         .unwrap_or_else(|_| "unknown".to_string());
     let amount = ERC20::new(contract_type.clone(), network)
-        .get_balance(request.public_address.as_str())
+        .get_balance(&request.public_address)
         .await
         .unwrap_or_else(|_| U256::zero());
     let decimal = ERC20::new(contract_type.clone(), network)
@@ -120,7 +120,7 @@ async fn get_nft_metadata(
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize)]
 pub struct GetNftOwnershipRequest {
     network: u8,
     game_client: u8,
@@ -131,6 +131,7 @@ pub struct GetNftOwnershipRequest {
 async fn get_nft_ownership(
     Query(request): Query<GetNftOwnershipRequest>,
 ) -> Json<NecoResult<NecoNFTOwnership>> {
+    println!("{:?}", request);
     let game_client = match request.game_client {
         0 => GameClient::NecoFishing,
         _ => {
@@ -153,8 +154,9 @@ async fn get_nft_ownership(
         }
     };
     let neco_nft = NecoNFT::new(network);
+    // let public_address = request.public_address.as_str();
     let ownership = neco_nft
-        .get_nft_ownership(request.public_address.as_str(), &game_client, &network)
+        .get_nft_ownership(&request.public_address, &game_client, &network)
         .await;
 
     match ownership {

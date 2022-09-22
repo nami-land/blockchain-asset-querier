@@ -65,7 +65,7 @@ pub const NECO_FISHING_NFT_IDS: [u32; 57] = [
     16012, 16013, 16014, 16015, 16016,
 ];
 
-pub const BSC_MAIN_NETWORK_RPC: &str = "https://bsc-dataseed.binance.org";
+pub const BSC_MAIN_NETWORK_RPC: &str = "https://bsc-dataseed.binance.org/";
 pub const BSC_TEST_NETWORK_RPC: &str = "https://data-seed-prebsc-1-s2.binance.org:8545/";
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

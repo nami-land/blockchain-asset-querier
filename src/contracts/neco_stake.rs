@@ -23,7 +23,7 @@ pub struct NecoStake {
 impl NecoStake {
     pub fn new(network: NetworkType) -> NecoStake {
         let client = ProviderManager::instance()
-            .get_provider(NetworkType::BSCTestNetwork)
+            .get_provider(network)
             .expect("get provider failed");
         let address = AddressManager::default()
             .get_contract_address(&ContractType::StakeNecoForFee, &network)
