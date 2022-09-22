@@ -97,7 +97,7 @@ impl NecoNFT {
                     )
                     .call()
                     .await
-                    .expect("get balance failed");
+                    .unwrap_or_default();
 
                 if balance.as_u64() == 0 {
                     tx_copy
@@ -115,7 +115,7 @@ impl NecoNFT {
                             &U256::from_dec_str(nft_id.to_string().as_str()).unwrap(),
                         )
                         .await
-                        .expect("get metadata failed");
+                        .unwrap_or_else(|_| NecoNFTMetadata::default());
                     tx_copy
                         .send(OwnershipItem {
                             nft_id: nft_id.to_string(),

@@ -66,9 +66,9 @@ pub const NECO_FISHING_NFT_IDS: [u32; 57] = [
 ];
 
 pub const BSC_MAIN_NETWORK_RPC: &str = "https://bsc-dataseed.binance.org";
-pub const BSC_TEST_NETWORK_RPC: &str = "https://data-seed-prebsc-1-s3.binance.org:8545/";
+pub const BSC_TEST_NETWORK_RPC: &str = "https://data-seed-prebsc-1-s2.binance.org:8545/";
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ContractType {
     NECO,
     NFISH,
