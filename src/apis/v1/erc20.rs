@@ -3,7 +3,7 @@ use ethers::types::U256;
 use reqwest::StatusCode;
 
 use crate::{
-    api::{request::request_model::GetErc20BalanceRequest, response::response_model::NecoResult},
+    apis::{request::request_model::GetErc20BalanceRequest, response::response_model::NecoResult},
     common::defines::{ContractType, NetworkType},
     contracts::erc20::ERC20,
     models::ERC20Token,

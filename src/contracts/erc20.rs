@@ -1,9 +1,9 @@
 use std::string;
 
 use crate::common::{
-    address_manager::AddressManager,
+    address::get_contract_address,
     defines::{ContractType, Error, NetworkType},
-    provider_manager::ProviderManager,
+    provider::ProviderManager,
 };
 use ethers::{
     prelude::abigen,
@@ -27,9 +27,8 @@ impl ERC20 {
         let client = ProviderManager::instance()
             .get_provider(network)
             .expect("get provider failed");
-        let address = AddressManager::default()
-            .get_contract_address(&contract_type, &network)
-            .expect("get contract address failed");
+        let address =
+            get_contract_address(&contract_type, &network).expect("get contract address failed");
         let contract = ERC20Contract::new(address, client.clone());
         ERC20 { contract }
     }

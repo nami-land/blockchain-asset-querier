@@ -1,3 +1,3 @@
-pub mod address_manager;
+pub mod address;
 pub mod defines;
-pub mod provider_manager;
+pub mod provider;

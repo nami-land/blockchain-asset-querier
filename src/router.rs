@@ -1,6 +1,6 @@
 use axum::{routing::get, Router};
 
-use crate::api::v1;
+use crate::apis::v1;
 
 pub fn new_router() -> Router {
     Router::new()

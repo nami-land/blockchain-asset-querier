@@ -6,7 +6,7 @@ use axum::{
 use ethers::types::U256;
 
 use crate::{
-    api::{request::request_model::GetNftOwnershipRequest, response::response_model::NecoResult},
+    apis::{request::request_model::GetNftOwnershipRequest, response::response_model::NecoResult},
     common::defines::{GameClient, NetworkType},
     contracts::neco_nft::NecoNFT,
     models::{NecoNFTMetadata, NecoNFTOwnership},

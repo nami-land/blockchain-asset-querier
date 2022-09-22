@@ -1,22 +1,17 @@
-use std::{
-    any::type_name,
-    borrow::{Borrow, BorrowMut},
-    collections::HashMap,
-    sync::Arc,
-};
+use std::{borrow::Borrow, collections::HashMap, sync::Arc};
 
 use crate::{
     common::{
-        address_manager::AddressManager,
+        address::get_contract_address,
         defines::{ContractType, Error, GameClient, NetworkType, NECO_FISHING_NFT_IDS},
-        provider_manager::ProviderManager,
+        provider::ProviderManager,
     },
     models::{NecoNFTMetadata, NecoNFTOwnership, OwnershipItem},
 };
 use ethers::{
     prelude::{abigen, Lazy},
-    providers::{call_raw::balance, Http, Provider},
-    types::{transaction::request, Address, U256},
+    providers::{Http, Provider},
+    types::{Address, U256},
 };
 use tokio::sync::{mpsc, Mutex};
 
@@ -41,8 +36,7 @@ impl NecoNFT {
         let client = ProviderManager::instance()
             .get_provider(network)
             .expect("get provider failed");
-        let address = AddressManager::default()
-            .get_contract_address(&ContractType::NecoNFT, &network)
+        let address = get_contract_address(&ContractType::NecoNFT, &network)
             .expect("get contract address failed");
         let contract = NecoNFTContract::new(address, client.clone());
         NecoNFT { contract }
@@ -56,9 +50,7 @@ impl NecoNFT {
         game: &GameClient,
         network: &NetworkType,
     ) -> Result<NecoNFTOwnership, Error> {
-        let contract_address = AddressManager::default()
-            .get_contract_address(&ContractType::NecoNFT, network)?
-            .to_string();
+        let contract_address = get_contract_address(&ContractType::NecoNFT, network)?.to_string();
         let ownership_items = self.get_ownership_items(public_address, game).await?;
         Ok(NecoNFTOwnership {
             public_address: public_address.to_owned(),

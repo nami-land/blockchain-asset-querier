@@ -1,4 +1,4 @@
-mod api;
+mod apis;
 mod common;
 mod contracts;
 mod models;
@@ -6,7 +6,7 @@ mod router;
 
 use crate::common::defines::{Error, BSC_MAIN_NETWORK_RPC, BSC_TEST_NETWORK_RPC};
 use common::defines::NetworkType;
-use common::provider_manager::ProviderManager;
+use common::provider::ProviderManager;
 use ethers::providers::{Http, Provider};
 use std::net::SocketAddr;
 

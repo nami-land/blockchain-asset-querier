@@ -2,7 +2,7 @@ use axum::{extract::Path, http::StatusCode, Json};
 use ethers::types::U256;
 
 use crate::{
-    api::response::response_model::NecoResult, common::defines::NetworkType,
+    apis::response::response_model::NecoResult, common::defines::NetworkType,
     contracts::neco_stake::NecoStake, models::NECOStakedInfo,
 };
 
