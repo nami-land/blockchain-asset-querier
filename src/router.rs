@@ -1,4 +1,4 @@
-use axum::{response::IntoResponse, routing::get, Json, Router};
+use axum::{extract::Path, response::IntoResponse, routing::get, Json, Router};
 use ethers::types::U256;
 use reqwest::StatusCode;
 
@@ -14,7 +14,10 @@ use crate::{
 pub fn new_router() -> Router {
     Router::new()
         .route("/", get(hello_world))
-        .route("/neco-staked-info", get(get_neco_staked_info))
+        .route(
+            "/neco-staked-info/:network/:public_address",
+            get(get_neco_staked_info),
+        )
         .route("/nft/ownership", get(get_nft_ownership))
         .route("/nft/metadata", get(get_nft_metadata))
         .route("/erc20/balance", get(get_erc20_balance))
@@ -67,20 +70,39 @@ async fn get_nft_ownership() -> impl IntoResponse {
     (StatusCode::OK, Json(ownership))
 }
 
-async fn get_neco_staked_info() -> impl IntoResponse {
-    let staked_amount = NecoStake::new(NetworkType::BSCTestNetwork)
-        .get_neco_staked_amount("0x04a6ae789f1993590268F882F34308E00f9082f9")
+// get neco staked info by public address
+async fn get_neco_staked_info(
+    Path((network, public_address)): Path<(u8, String)>,
+) -> impl IntoResponse {
+    println!("public_address: {}", public_address);
+    println!("network: {:?}", network);
+    let network = match network {
+        0 => NetworkType::BSCMainNetwork,
+        1 => NetworkType::BSCTestNetwork,
+        _ => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(NECOStakedInfo {
+                    public_address: "".to_string(),
+                    staked_amount: "".to_string(),
+                    staked_time: "".to_string(),
+                }),
+            )
+        }
+    };
+    let staked_amount = NecoStake::new(network)
+        .get_neco_staked_amount(&public_address)
         .await
-        .unwrap();
-    let staked_time = NecoStake::new(NetworkType::BSCTestNetwork)
-        .get_neco_staked_time("0x04a6ae789f1993590268F882F34308E00f9082f9")
+        .unwrap_or_else(|_| U256::from(0));
+    let staked_time = NecoStake::new(network)
+        .get_neco_staked_time(&public_address)
         .await
-        .unwrap();
+        .unwrap_or_else(|_| U256::from(0));
 
     (
         StatusCode::OK,
         Json(NECOStakedInfo {
-            public_address: "0x04a6ae789f1993590268F882F34308E00f9082f9".into(),
+            public_address,
             staked_amount: staked_amount.to_string(),
             staked_time: staked_time.to_string(),
         }),
