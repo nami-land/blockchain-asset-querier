@@ -1,9 +1,5 @@
 use super::defines::{ContractType, Error, NetworkType};
-use ethers::prelude::abigen;
-use ethers_core::{
-    abi::Abi,
-    types::{Address, H256},
-};
+use ethers_core::types::Address;
 
 pub fn get_contract_address(
     contract_type: &ContractType,

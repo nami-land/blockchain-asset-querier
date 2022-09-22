@@ -90,30 +90,23 @@ impl NecoNFTService {
                     .await
                     .unwrap_or_default();
 
-                if balance.as_u64() == 0 {
-                    tx_copy
-                        .send(OwnershipItem {
-                            nft_id: nft_id.to_string(),
-                            amount: 0,
-                            nft_metadata: NecoNFTMetadata::default(),
-                        })
-                        .await
-                        .unwrap();
-                } else {
-                    let metadata = (*neco_nft_copy)
+                let metadata = match balance.as_u64() {
+                    0 => NecoNFTMetadata::default(),
+                    _ => (*neco_nft_copy)
                         .borrow()
                         .get_metadata_by_id(&U256::from_dec_str(&nft_id.to_string()).unwrap())
                         .await
-                        .unwrap_or_else(|_| NecoNFTMetadata::default());
-                    tx_copy
-                        .send(OwnershipItem {
-                            nft_id: nft_id.to_string(),
-                            amount: balance.as_u64(),
-                            nft_metadata: metadata,
-                        })
-                        .await
-                        .unwrap();
-                }
+                        .unwrap_or_else(|_| NecoNFTMetadata::default()),
+                };
+
+                tx_copy
+                    .send(OwnershipItem {
+                        nft_id: nft_id.to_string(),
+                        amount: balance.as_u64(),
+                        nft_metadata: metadata,
+                    })
+                    .await
+                    .unwrap();
             });
         }
 
