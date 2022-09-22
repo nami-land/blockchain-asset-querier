@@ -1,3 +1,4 @@
+mod api;
 mod common;
 mod contracts;
 mod models;
