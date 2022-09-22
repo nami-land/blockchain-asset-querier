@@ -3,7 +3,7 @@ use ethers::types::U256;
 
 use crate::{
     apis::response::response_model::NecoResult, common::defines::NetworkType,
-    contracts::neco_stake::NecoStake, models::NECOStakedInfo,
+    models::NECOStakedInfo, services::neco_stake::NecoStakeService,
 };
 
 // get neco staked info by public address
@@ -23,11 +23,11 @@ pub async fn get_neco_staked_info(
             });
         }
     };
-    let staked_amount = NecoStake::new(network)
+    let staked_amount = NecoStakeService::new(network)
         .get_neco_staked_amount(&public_address)
         .await
         .unwrap_or_else(|_| U256::from(0));
-    let staked_time = NecoStake::new(network)
+    let staked_time = NecoStakeService::new(network)
         .get_neco_staked_time(&public_address)
         .await
         .unwrap_or_else(|_| U256::from(0));

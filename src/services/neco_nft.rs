@@ -27,23 +27,23 @@ static NFT_METADATA_CACHES: Lazy<Mutex<HashMap<U256, NecoNFTMetadata>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
 
 #[derive(Debug, Clone)]
-pub struct NecoNFT {
+pub struct NecoNFTService {
     contract: NecoNFTContract<Provider<Http>>,
 }
 
-impl NecoNFT {
-    pub fn new(network: NetworkType) -> NecoNFT {
+impl NecoNFTService {
+    pub fn new(network: NetworkType) -> NecoNFTService {
         let client = ProviderManager::instance()
             .get_provider(network)
             .expect("get provider failed");
         let address = get_contract_address(&ContractType::NecoNFT, &network)
             .expect("get contract address failed");
         let contract = NecoNFTContract::new(address, client.clone());
-        NecoNFT { contract }
+        NecoNFTService { contract }
     }
 }
 
-impl NecoNFT {
+impl NecoNFTService {
     pub async fn get_nft_ownership(
         &self,
         public_address: &str,
@@ -173,12 +173,12 @@ impl NecoNFT {
 
 #[cfg(test)]
 mod tests {
-    use crate::{common::defines::ContractType, contracts::neco_nft::NecoNFT};
+    use crate::{common::defines::ContractType, services::neco_nft::NecoNFTService};
     use ethers::types::U256;
 
     #[test]
     fn test_get_nft_metadata() {
-        let neco_nft = NecoNFT::new(crate::common::defines::NetworkType::BSCTestNetwork);
+        let neco_nft = NecoNFTService::new(crate::common::defines::NetworkType::BSCTestNetwork);
         let metadata = tokio_test::block_on(
             neco_nft.get_metadata_by_id(&U256::from_dec_str("10001").unwrap()),
         );

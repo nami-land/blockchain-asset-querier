@@ -5,8 +5,8 @@ use reqwest::StatusCode;
 use crate::{
     apis::{request::request_model::GetErc20BalanceRequest, response::response_model::NecoResult},
     common::defines::{ContractType, NetworkType},
-    contracts::erc20::ERC20,
     models::ERC20Token,
+    services::erc20::ERC20Service,
 };
 
 pub async fn get_erc20_balance(
@@ -36,15 +36,15 @@ pub async fn get_erc20_balance(
         }
     };
 
-    let symbol = ERC20::new(contract_type, network)
+    let symbol = ERC20Service::new(contract_type, network)
         .get_symbol()
         .await
         .unwrap_or_else(|_| "unknown".to_string());
-    let amount = ERC20::new(contract_type.clone(), network)
+    let amount = ERC20Service::new(contract_type.clone(), network)
         .get_balance(&request.public_address)
         .await
         .unwrap_or_else(|_| U256::zero());
-    let decimal = ERC20::new(contract_type.clone(), network)
+    let decimal = ERC20Service::new(contract_type.clone(), network)
         .get_decimal()
         .await
         .unwrap_or_else(|_| 0);

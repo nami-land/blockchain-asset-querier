@@ -16,23 +16,23 @@ abigen!(
 );
 
 #[derive(Debug)]
-pub struct NecoStake {
+pub struct NecoStakeService {
     contract: NecoStakeContract<Provider<Http>>,
 }
 
-impl NecoStake {
-    pub fn new(network: NetworkType) -> NecoStake {
+impl NecoStakeService {
+    pub fn new(network: NetworkType) -> NecoStakeService {
         let client = ProviderManager::instance()
             .get_provider(network)
             .expect("get provider failed");
         let address = get_contract_address(&ContractType::StakeNecoForFee, &network)
             .expect("get contract address failed");
         let contract = NecoStakeContract::new(address, client.clone());
-        NecoStake { contract }
+        NecoStakeService { contract }
     }
 }
 
-impl NecoStake {
+impl NecoStakeService {
     pub async fn get_neco_staked_amount(&self, account: &str) -> Result<U256, Error> {
         let address = account.parse::<Address>()?;
         Ok(self.contract.get_staked_neco_amount(address).call().await?)

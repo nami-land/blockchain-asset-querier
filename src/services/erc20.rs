@@ -18,23 +18,23 @@ abigen!(
 );
 
 #[derive(Debug)]
-pub struct ERC20 {
+pub struct ERC20Service {
     contract: ERC20Contract<Provider<Http>>,
 }
 
-impl ERC20 {
-    pub fn new(contract_type: ContractType, network: NetworkType) -> ERC20 {
+impl ERC20Service {
+    pub fn new(contract_type: ContractType, network: NetworkType) -> ERC20Service {
         let client = ProviderManager::instance()
             .get_provider(network)
             .expect("get provider failed");
         let address =
             get_contract_address(&contract_type, &network).expect("get contract address failed");
         let contract = ERC20Contract::new(address, client.clone());
-        ERC20 { contract }
+        ERC20Service { contract }
     }
 }
 
-impl ERC20 {
+impl ERC20Service {
     pub async fn get_symbol(&self) -> Result<String, Error> {
         Ok(self.contract.symbol().call().await?)
     }

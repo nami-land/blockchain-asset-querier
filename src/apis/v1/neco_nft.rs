@@ -8,8 +8,8 @@ use ethers::types::U256;
 use crate::{
     apis::{request::request_model::GetNftOwnershipRequest, response::response_model::NecoResult},
     common::defines::{GameClient, NetworkType},
-    contracts::neco_nft::NecoNFT,
     models::{NecoNFTMetadata, NecoNFTOwnership},
+    services::neco_nft::NecoNFTService,
 };
 
 pub async fn get_nft_metadata(
@@ -26,7 +26,7 @@ pub async fn get_nft_metadata(
             });
         }
     };
-    let neco_nft = NecoNFT::new(network);
+    let neco_nft = NecoNFTService::new(network);
     let ownership = neco_nft
         .get_metadata_by_id(&U256::from_dec_str(&nft_id).unwrap())
         .await;
@@ -71,7 +71,7 @@ pub async fn get_nft_ownership(
             });
         }
     };
-    let neco_nft = NecoNFT::new(network);
+    let neco_nft = NecoNFTService::new(network);
     // let public_address = request.public_address.as_str();
     let ownership = neco_nft
         .get_nft_ownership(&request.public_address, &game_client, &network)
