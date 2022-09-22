@@ -19,7 +19,7 @@ async fn main() -> Result<(), Error> {
     ProviderManager::instance().set_provider(NetworkType::BSCTestNetwork, bsc_test_client);
 
     let app = router::new_router();
-    let addr = SocketAddr::from(([0, 0, 0, 0], 8888));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
     println!("web server is listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
