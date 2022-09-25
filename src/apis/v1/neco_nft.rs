@@ -14,6 +14,7 @@ use crate::{
     services::neco_nft::NecoNFTService,
 };
 
+// get nft metadata by nft id
 pub async fn get_nft_metadata(
     Path((network, nft_id)): Path<(u8, String)>,
 ) -> Json<NecoResponse<NecoNFTMetadata>> {

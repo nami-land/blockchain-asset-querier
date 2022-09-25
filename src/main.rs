@@ -12,8 +12,10 @@ use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let bsc_main_client = Provider::<Http>::try_from(BSC_MAIN_NETWORK_RPC).unwrap();
-    let bsc_test_client = Provider::<Http>::try_from(BSC_TEST_NETWORK_RPC).unwrap();
+    let bsc_main_client =
+        Provider::<Http>::try_from(BSC_MAIN_NETWORK_RPC).expect("get bsc mainnet provider failed.");
+    let bsc_test_client =
+        Provider::<Http>::try_from(BSC_TEST_NETWORK_RPC).expect("get bsc testnet provider failed.");
 
     ProviderManager::instance().set_provider(NetworkType::BSCMainNetwork, bsc_main_client);
     ProviderManager::instance().set_provider(NetworkType::BSCTestNetwork, bsc_test_client);

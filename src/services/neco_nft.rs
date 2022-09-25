@@ -66,7 +66,7 @@ impl NecoNFTService {
         game: &GameClient,
     ) -> Result<Vec<OwnershipItem>, Error> {
         let neco_nft = Arc::new(self.clone());
-        let address = public_address.parse::<Address>().unwrap();
+        let address = public_address.parse::<Address>()?;
         let (tx, mut rx) = mpsc::channel(4096);
 
         let mut ids = NECO_FISHING_NFT_IDS;
@@ -99,14 +99,13 @@ impl NecoNFTService {
                         .unwrap_or_else(|_| NecoNFTMetadata::default()),
                 };
 
-                tx_copy
+                _ = tx_copy
                     .send(OwnershipItem {
                         nft_id: nft_id.to_string(),
                         amount: balance.as_u64(),
                         nft_metadata: metadata,
                     })
-                    .await
-                    .unwrap();
+                    .await;
             });
         }
 
