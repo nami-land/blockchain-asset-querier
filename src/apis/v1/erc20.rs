@@ -3,24 +3,22 @@ use ethers::types::U256;
 use reqwest::StatusCode;
 
 use crate::{
-    apis::{request::request_model::GetErc20BalanceRequest, response::response_model::NecoResult},
+    apis::{
+        request::request_model::GetERC20BalanceRequest, response::response_model::NecoResponse,
+    },
     common::defines::{ContractType, NetworkType},
     models::ERC20Token,
     services::erc20::ERC20Service,
 };
 
 pub async fn get_erc20_balance(
-    Query(request): Query<GetErc20BalanceRequest>,
-) -> Json<NecoResult<ERC20Token>> {
+    Query(request): Query<GetERC20BalanceRequest>,
+) -> Json<NecoResponse<ERC20Token>> {
     let network = match request.network {
         0 => NetworkType::BSCMainNetwork,
         1 => NetworkType::BSCTestNetwork,
         _ => {
-            return Json(NecoResult {
-                status: StatusCode::BAD_REQUEST.as_u16(),
-                message: "network type error".to_string(),
-                data: None,
-            });
+            return NecoResponse::err(StatusCode::BAD_REQUEST, "network type error");
         }
     };
     let contract_type = match request.contract_type.as_str() {
@@ -28,11 +26,7 @@ pub async fn get_erc20_balance(
         "nfish" => ContractType::NFISH,
         "busd" => ContractType::BUSD,
         _ => {
-            return Json(NecoResult {
-                status: StatusCode::BAD_REQUEST.as_u16(),
-                message: "contract type error".to_string(),
-                data: None,
-            });
+            return NecoResponse::err(StatusCode::BAD_REQUEST, "contract type error");
         }
     };
 
@@ -49,13 +43,9 @@ pub async fn get_erc20_balance(
         .await
         .unwrap_or_else(|_| 0);
 
-    Json(NecoResult {
-        status: StatusCode::OK.as_u16(),
-        message: "success".to_string(),
-        data: Some(ERC20Token {
-            symbol,
-            decimal,
-            amount: amount.to_string(),
-        }),
+    NecoResponse::ok(ERC20Token {
+        symbol,
+        decimal,
+        amount: amount.to_string(),
     })
 }

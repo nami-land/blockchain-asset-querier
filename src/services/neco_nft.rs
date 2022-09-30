@@ -1,3 +1,4 @@
+use std::process::id;
 use std::{borrow::Borrow, collections::HashMap, sync::Arc};
 
 use crate::{
@@ -55,7 +56,7 @@ impl NecoNFTService {
         Ok(NecoNFTOwnership {
             public_address: public_address.to_owned(),
             network: network.to_owned(),
-            contract_address: contract_address,
+            contract_address,
             ownerships: ownership_items,
         })
     }
@@ -66,15 +67,19 @@ impl NecoNFTService {
         game: &GameClient,
     ) -> Result<Vec<OwnershipItem>, Error> {
         let neco_nft = Arc::new(self.clone());
-        let address = public_address.parse::<Address>().unwrap();
+        let address = public_address.parse::<Address>()?;
         let (tx, mut rx) = mpsc::channel(4096);
 
-        let mut ids = NECO_FISHING_NFT_IDS;
+        let mut ids = vec![];
         match game {
-            GameClient::NecoFishing => ids = NECO_FISHING_NFT_IDS,
+            GameClient::NecoFishing => {
+                ids = vec![];
+                NECO_FISHING_NFT_IDS.map(|id| ids.push(id));
+            }
         }
-
-        for nft_id in ids {
+        let ids_copy = ids.clone();
+        let ids_iter = ids.into_iter();
+        for nft_id in ids_iter {
             let neco_nft_copy = neco_nft.clone();
             let tx_copy = tx.clone();
 
@@ -90,35 +95,28 @@ impl NecoNFTService {
                     .await
                     .unwrap_or_default();
 
-                if balance.as_u64() == 0 {
-                    tx_copy
-                        .send(OwnershipItem {
-                            nft_id: nft_id.to_string(),
-                            amount: 0,
-                            nft_metadata: NecoNFTMetadata::default(),
-                        })
-                        .await
-                        .unwrap();
-                } else {
-                    let metadata = (*neco_nft_copy)
+                let metadata = match balance.as_u64() {
+                    0 => NecoNFTMetadata::default(),
+                    _ => (*neco_nft_copy)
                         .borrow()
                         .get_metadata_by_id(&U256::from_dec_str(&nft_id.to_string()).unwrap())
                         .await
-                        .unwrap_or_else(|_| NecoNFTMetadata::default());
-                    tx_copy
-                        .send(OwnershipItem {
-                            nft_id: nft_id.to_string(),
-                            amount: balance.as_u64(),
-                            nft_metadata: metadata,
-                        })
-                        .await
-                        .unwrap();
-                }
+                        .unwrap_or_else(|_| NecoNFTMetadata::default()),
+                };
+
+                tx_copy
+                    .send(OwnershipItem {
+                        nft_id: nft_id.to_string(),
+                        amount: balance.as_u64(),
+                        nft_metadata: metadata,
+                    })
+                    .await
+                    .expect("TODO: panic message");
             });
         }
 
         let mut ownership_items: Vec<OwnershipItem> = vec![];
-        for _ in 0..ids.len() {
+        for _ in 0..ids_copy.len() {
             if let Some(ownership_item) = rx.recv().await {
                 if ownership_item.amount != 0 {
                     ownership_items.push(ownership_item);

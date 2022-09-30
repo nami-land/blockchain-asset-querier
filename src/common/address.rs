@@ -1,9 +1,5 @@
 use super::defines::{ContractType, Error, NetworkType};
-use ethers::prelude::abigen;
-use ethers_core::{
-    abi::Abi,
-    types::{Address, H256},
-};
+use ethers_core::types::Address;
 
 pub fn get_contract_address(
     contract_type: &ContractType,
@@ -36,10 +32,10 @@ pub fn get_contract_address(
         },
         ContractType::NecoNFT => match network_type {
             NetworkType::BSCMainNetwork => {
-                Ok("0xEA5534Bac1291676595223579517D35Ad9C382eE".parse::<Address>()?)
+                Ok("0x1Ccd8fE6A73e40e24Ce1a9724eD264940667281D".parse::<Address>()?)
             }
             NetworkType::BSCTestNetwork => {
-                Ok("0xEB1C424A31490A9B141126838a3c625647f22BDc".parse::<Address>()?)
+                Ok("0xF9AF76c7d1CD6b60F19A6328D408941a2886235F".parse::<Address>()?)
             }
         },
         ContractType::StakeNecoForFee => match network_type {

@@ -1,5 +1,3 @@
-use std::string;
-
 use crate::common::{
     address::get_contract_address,
     defines::{ContractType, Error, NetworkType},

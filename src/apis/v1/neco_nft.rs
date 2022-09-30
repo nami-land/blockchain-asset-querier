@@ -6,24 +6,23 @@ use axum::{
 use ethers::types::U256;
 
 use crate::{
-    apis::{request::request_model::GetNftOwnershipRequest, response::response_model::NecoResult},
+    apis::{
+        request::request_model::GetNFTOwnershipRequest, response::response_model::NecoResponse,
+    },
     common::defines::{GameClient, NetworkType},
     models::{NecoNFTMetadata, NecoNFTOwnership},
     services::neco_nft::NecoNFTService,
 };
 
+// get nft metadata by nft id
 pub async fn get_nft_metadata(
     Path((network, nft_id)): Path<(u8, String)>,
-) -> Json<NecoResult<NecoNFTMetadata>> {
+) -> Json<NecoResponse<NecoNFTMetadata>> {
     let network = match network {
         0 => NetworkType::BSCMainNetwork,
         1 => NetworkType::BSCTestNetwork,
         _ => {
-            return Json(NecoResult {
-                status: StatusCode::BAD_REQUEST.as_u16(),
-                message: "network type error".to_string(),
-                data: None,
-            });
+            return NecoResponse::err(StatusCode::BAD_REQUEST, "network type error");
         }
     };
     let neco_nft = NecoNFTService::new(network);
@@ -32,61 +31,32 @@ pub async fn get_nft_metadata(
         .await;
 
     match ownership {
-        Ok(metadata) => Json(NecoResult {
-            status: StatusCode::OK.as_u16(),
-            message: "success".to_string(),
-            data: Some(metadata),
-        }),
-        Err(e) => Json(NecoResult {
-            status: StatusCode::BAD_REQUEST.as_u16(),
-            message: e.to_string(),
-            data: None,
-        }),
+        Ok(metadata) => NecoResponse::ok(metadata),
+        Err(e) => NecoResponse::err(StatusCode::BAD_REQUEST, &e.to_string()),
     }
 }
 
 // get nft ownership by public address
 pub async fn get_nft_ownership(
-    Query(request): Query<GetNftOwnershipRequest>,
-) -> Json<NecoResult<NecoNFTOwnership>> {
-    println!("{:?}", request);
+    Query(request): Query<GetNFTOwnershipRequest>,
+) -> Json<NecoResponse<NecoNFTOwnership>> {
     let game_client = match request.game_client {
         0 => GameClient::NecoFishing,
-        _ => {
-            return Json(NecoResult::new(
-                StatusCode::BAD_REQUEST,
-                "invalid game client".to_string(),
-                None,
-            ))
-        }
+        _ => return NecoResponse::err(StatusCode::BAD_REQUEST, "game client type error"),
     };
     let network = match request.network {
         0 => NetworkType::BSCMainNetwork,
         1 => NetworkType::BSCTestNetwork,
-        _ => {
-            return Json(NecoResult {
-                status: StatusCode::BAD_REQUEST.as_u16(),
-                message: "network type error".to_string(),
-                data: None,
-            });
-        }
+        _ => return NecoResponse::err(StatusCode::BAD_REQUEST, "network type error"),
     };
+
     let neco_nft = NecoNFTService::new(network);
-    // let public_address = request.public_address.as_str();
     let ownership = neco_nft
         .get_nft_ownership(&request.public_address, &game_client, &network)
         .await;
 
     match ownership {
-        Ok(ownership) => Json(NecoResult::new(
-            StatusCode::OK,
-            "success".to_string(),
-            Some(ownership),
-        )),
-        Err(err) => Json(NecoResult::new(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            err.to_string(),
-            None,
-        )),
+        Ok(ownership) => NecoResponse::ok(ownership),
+        Err(err) => NecoResponse::err(StatusCode::INTERNAL_SERVER_ERROR, &err.to_string()),
     }
 }

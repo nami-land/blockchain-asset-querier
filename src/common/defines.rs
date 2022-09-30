@@ -1,4 +1,3 @@
-use ethers::abi::Uint;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Formatter;
