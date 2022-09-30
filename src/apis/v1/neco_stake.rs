@@ -1,5 +1,6 @@
 use axum::{extract::Path, http::StatusCode, Json};
 use ethers::types::U256;
+use log::info;
 
 use crate::{
     apis::response::response_model::NecoResponse, common::defines::NetworkType,
@@ -10,8 +11,10 @@ use crate::{
 pub async fn get_neco_staked_info(
     Path((network, public_address)): Path<(u8, String)>,
 ) -> Json<NecoResponse<NECOStakedInfo>> {
-    println!("public_address: {}", public_address);
-    println!("network: {:?}", network);
+    info!(
+        "get_neco_staked_info - public_address: {}, network: {:?}",
+        public_address, network
+    );
     let network = match network {
         0 => NetworkType::BSCMainNetwork,
         1 => NetworkType::BSCTestNetwork,

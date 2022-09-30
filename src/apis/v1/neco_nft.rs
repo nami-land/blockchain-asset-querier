@@ -40,7 +40,6 @@ pub async fn get_nft_metadata(
 pub async fn get_nft_ownership(
     Query(request): Query<GetNFTOwnershipRequest>,
 ) -> Json<NecoResponse<NecoNFTOwnership>> {
-    println!("{:?}", request);
     let game_client = match request.game_client {
         0 => GameClient::NecoFishing,
         _ => return NecoResponse::err(StatusCode::BAD_REQUEST, "game client type error"),
@@ -52,7 +51,6 @@ pub async fn get_nft_ownership(
     };
 
     let neco_nft = NecoNFTService::new(network);
-    // let public_address = request.public_address.as_str();
     let ownership = neco_nft
         .get_nft_ownership(&request.public_address, &game_client, &network)
         .await;
