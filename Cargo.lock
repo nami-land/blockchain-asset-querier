@@ -281,7 +281,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "blockchain-asseter"
+name = "blockchain-asset-observer"
 version = "0.1.0"
 dependencies = [
  "async-trait",
