@@ -1,28 +1,28 @@
-use serde::{Deserialize, Serialize};
-
 use crate::common::defines::NetworkType;
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema)]
 pub struct ERC20Token {
     pub symbol: String,
     pub decimal: u8,
     pub amount: String,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema)]
 pub struct NECOStakedInfo {
     pub public_address: String,
     pub staked_amount: String,
     pub staked_time: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct NecoNFTTrait {
     pub trait_type: String,
     pub value: String,
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
 pub struct NecoNFTMetadata {
     pub id: String,
     pub name: String,
@@ -37,14 +37,14 @@ pub struct NecoNFTMetadata {
     pub attributes: Vec<NecoNFTTrait>,
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
 pub struct OwnershipItem {
     pub nft_id: String,
     pub amount: u64,
     pub nft_metadata: NecoNFTMetadata,
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
 pub struct NecoNFTOwnership {
     pub public_address: String,
     pub network: NetworkType,
