@@ -51,3 +51,6 @@ pub struct NecoNFTOwnership {
     pub contract_address: String,
     pub ownerships: Vec<OwnershipItem>,
 }
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
+pub struct EmptyData {}

@@ -1,9 +1,11 @@
 use crate::apis::request::request_model::GetNECOStakedInfoRequest;
 use crate::apis::{response, v1};
 use crate::{
-    apis::response::response_model::NECOStakedInfoReponse,
-    apis::response::response_model::NecoResponse, common::defines::NetworkType,
-    models::NECOStakedInfo, services::neco_stake::NecoStakeService,
+    apis::response::response_model::Response,
+    apis::response::response_model::{ErrorReponse, NECOStakedInfoReponse},
+    common::defines::NetworkType,
+    models::{EmptyData, NECOStakedInfo},
+    services::neco_stake::NecoStakeService,
 };
 use axum::{routing::get, Router};
 use utoipa::{
@@ -31,6 +33,7 @@ pub fn new_router() -> Router {
 #[utoipa::path(
     get,
     path = "/ping",
+    tag = "ping",
     responses(
         (status = 200, description = "Ping the service", body = [String])
     )
@@ -47,9 +50,10 @@ async fn ping() -> &'static str {
     ),
     components(
         schemas(
+            EmptyData,
             NECOStakedInfo,
             NECOStakedInfoReponse,
-            NecoResponse<NECOStakedInfo>,
+            ErrorReponse,
         ),
     ),
     tags(

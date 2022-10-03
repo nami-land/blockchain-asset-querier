@@ -4,8 +4,10 @@ use log::info;
 
 use crate::apis::request::request_model::GetNECOStakedInfoRequest;
 use crate::{
-    apis::response::response_model::NecoResponse, common::defines::NetworkType,
-    models::NECOStakedInfo, services::neco_stake::NecoStakeService,
+    apis::response::response_model::{ErrorReponse, NECOStakedInfoReponse, Response},
+    common::defines::NetworkType,
+    models::NECOStakedInfo,
+    services::neco_stake::NecoStakeService,
 };
 
 // get neco staked info by public address
@@ -18,12 +20,12 @@ use crate::{
     ),
     responses(
         (status = 200, description = "Get NECO staked info successfully", body = NECOStakedInfoReponse),
-        (status = 400, description = "Bad request", body = NecoResponse<()>),
+        (status = 400, description = "Bad request", body = ErrorReponse),
     )
 )]
 pub async fn get_neco_staked_info(
     param: Path<GetNECOStakedInfoRequest>,
-) -> Json<NecoResponse<NECOStakedInfo>> {
+) -> Json<Response<NECOStakedInfo>> {
     info!(
         "get_neco_staked_info - public_address: {:?}, network: {:?}",
         param.public_address, param.network
@@ -31,7 +33,7 @@ pub async fn get_neco_staked_info(
     let network = match param.network {
         0 => NetworkType::BSCMainNetwork,
         1 => NetworkType::BSCTestNetwork,
-        _ => return NecoResponse::err(StatusCode::BAD_REQUEST, "network type error"),
+        _ => return Response::err(StatusCode::BAD_REQUEST, "network type error"),
     };
 
     let staked_amount = NecoStakeService::new(network)
@@ -43,7 +45,7 @@ pub async fn get_neco_staked_info(
         .await
         .unwrap_or_else(|_| U256::from(0));
 
-    NecoResponse::ok(NECOStakedInfo {
+    Response::ok(NECOStakedInfo {
         public_address: param.public_address.clone(),
         staked_amount: staked_amount.to_string(),
         staked_time: staked_time.to_string(),
