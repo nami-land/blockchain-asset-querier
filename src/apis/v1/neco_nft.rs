@@ -4,6 +4,7 @@ use axum::{
     Json,
 };
 use ethers::types::U256;
+use std::borrow::Borrow;
 
 use crate::{
     apis::{request::request_model::GetNFTOwnershipRequest, response::response_model::Response},
@@ -25,7 +26,7 @@ pub async fn get_nft_metadata(
     };
     let neco_nft = NecoNFTService::new(network);
     let ownership = neco_nft
-        .get_metadata_by_id(&U256::from_dec_str(&nft_id).unwrap())
+        .get_metadata_by_id(&U256::from_dec_str((&nft_id).borrow()).unwrap())
         .await;
 
     match ownership {
@@ -35,6 +36,18 @@ pub async fn get_nft_metadata(
 }
 
 // get nft ownership by public address
+#[utoipa::path(
+    get,
+    path = "/v1/nft/ownership",
+    tag = "ERC1155",
+    params(
+        GetNFTOwnershipRequest
+    ),
+    responses(
+        (status = 200, description = "Get ERC20 token balance successfully", body = ERC1155OwnershipResponse),
+        (status = 400, description = "Bad request", body = ErrorReponse),
+    )
+)]
 pub async fn get_nft_ownership(
     Query(request): Query<GetNFTOwnershipRequest>,
 ) -> Json<Response<NecoNFTOwnership>> {

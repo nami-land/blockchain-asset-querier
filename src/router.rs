@@ -2,9 +2,14 @@ use crate::apis::request::request_model::GetNECOStakedInfoRequest;
 use crate::apis::{response, v1};
 use crate::{
     apis::response::response_model::Response,
-    apis::response::response_model::{ErrorReponse, NECOStakedInfoReponse},
+    apis::response::response_model::{
+        ERC1155OwnershipResponse, ERC20TokenResponse, ErrorReponse, NECOStakedInfoReponse,
+    },
     common::defines::NetworkType,
-    models::{EmptyData, NECOStakedInfo},
+    models::{
+        ERC20Token, EmptyData, NECOStakedInfo, NecoNFTMetadata, NecoNFTOwnership, NecoNFTTrait,
+        OwnershipItem,
+    },
     services::neco_stake::NecoStakeService,
 };
 use axum::{routing::get, Router};
@@ -47,13 +52,22 @@ async fn ping() -> &'static str {
     paths(
         ping,
         v1::neco_stake::get_neco_staked_info,
+        v1::erc20::get_erc20_balance,
+        v1::neco_nft::get_nft_ownership
     ),
     components(
         schemas(
             EmptyData,
+            ERC20Token,
+            NecoNFTTrait,
+            NecoNFTMetadata,
+            OwnershipItem,
+            NecoNFTOwnership,
+            ErrorReponse,
             NECOStakedInfo,
             NECOStakedInfoReponse,
-            ErrorReponse,
+            ERC20TokenResponse,
+            ERC1155OwnershipResponse
         ),
     ),
     tags(

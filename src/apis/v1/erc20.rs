@@ -9,6 +9,18 @@ use crate::{
     services::erc20::ERC20Service,
 };
 
+#[utoipa::path(
+    get,
+    path = "/v1/erc20/balance",
+    tag = "ERC20",
+    params(
+        GetERC20BalanceRequest
+    ),
+    responses(
+        (status = 200, description = "Get ERC20 token balance successfully", body = ERC20TokenResponse),
+        (status = 400, description = "Bad request", body = ErrorReponse),
+    )
+)]
 pub async fn get_erc20_balance(
     Query(request): Query<GetERC20BalanceRequest>,
 ) -> Json<Response<ERC20Token>> {
