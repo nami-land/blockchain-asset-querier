@@ -1,7 +1,5 @@
-use crate::apis::request::request_model::GetNECOStakedInfoRequest;
-use crate::apis::{response, v1};
+use crate::apis::v1;
 use crate::{
-    apis::response::response_model::Response,
     apis::response::response_model::{
         ERC1155MetadataResponse, ERC1155OwnershipResponse, ERC20TokenResponse, ErrorResponse,
         NECOStakedInfoResponse,
@@ -11,13 +9,9 @@ use crate::{
         ERC20Token, EmptyData, NECOStakedInfo, NecoNFTMetadata, NecoNFTOwnership, NecoNFTTrait,
         OwnershipItem,
     },
-    services::neco_stake::NecoStakeService,
 };
 use axum::{routing::get, Router};
-use utoipa::{
-    openapi::security::{ApiKey, ApiKeyValue, SecurityScheme},
-    Modify, OpenApi,
-};
+use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 pub fn new_router() -> Router {
@@ -75,7 +69,7 @@ async fn ping() -> &'static str {
         ),
     ),
     tags(
-        (name = "Blockchain-Asset-Observer", description = "Todo items management API")
+        (name = "Blockchain-Asset-Querier", description = "Blockchain assets API")
     )
 )]
 struct ApiDoc;

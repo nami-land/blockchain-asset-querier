@@ -25,7 +25,7 @@ use crate::{
         GetNFTMetadataRequest
     ),
     responses(
-        (status = 200, description = "Get ERC20 token balance successfully", body = ERC1155OwnershipResponse),
+        (status = 200, description = "Get NFT metadata successfully", body = ERC1155OwnershipResponse),
         (status = 400, description = "Bad request", body = ErrorResponse),
     )
 )]
@@ -59,7 +59,7 @@ pub async fn get_nft_metadata(
         GetNFTOwnershipRequest
     ),
     responses(
-        (status = 200, description = "Get ERC20 token balance successfully", body = ERC1155OwnershipResponse),
+        (status = 200, description = "Get NFT ownership successfully", body = ERC1155OwnershipResponse),
         (status = 400, description = "Bad request", body = ErrorResponse),
     )
 )]

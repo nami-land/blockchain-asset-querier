@@ -38,4 +38,4 @@ EXPOSE 8080
 EXPOSE 8081
 
 # run the binary
-CMD ["blockchain-asset-observer"]
+CMD ["blockchain-asset-querier"]
