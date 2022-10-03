@@ -4,9 +4,7 @@ use log::info;
 
 use crate::apis::request::request_model::GetNECOStakedInfoRequest;
 use crate::{
-    apis::response::response_model::{ErrorReponse, NECOStakedInfoReponse, Response},
-    common::defines::NetworkType,
-    models::NECOStakedInfo,
+    apis::response::response_model::Response, common::defines::NetworkType, models::NECOStakedInfo,
     services::neco_stake::NecoStakeService,
 };
 
@@ -19,8 +17,8 @@ use crate::{
         GetNECOStakedInfoRequest
     ),
     responses(
-        (status = 200, description = "Get NECO staked info successfully", body = NECOStakedInfoReponse),
-        (status = 400, description = "Bad request", body = ErrorReponse),
+        (status = 200, description = "Get NECO staked info successfully", body = NECOStakedInfoResponse),
+        (status = 400, description = "Bad request", body = ErrorResponse),
     )
 )]
 pub async fn get_neco_staked_info(

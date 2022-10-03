@@ -1,7 +1,7 @@
 use crate::{
     common::defines::NetworkType,
     models::EmptyData,
-    models::{ERC20Token, NECOStakedInfo, NecoNFTOwnership},
+    models::{ERC20Token, NECOStakedInfo, NecoNFTMetadata, NecoNFTOwnership},
     services::neco_stake::NecoStakeService,
 };
 use axum::Json;
@@ -11,10 +11,11 @@ use utoipa::ToSchema;
 
 #[derive(Debug, Default, Serialize, ToSchema)]
 #[aliases(
-    NECOStakedInfoReponse = Response<NECOStakedInfo>,
+    NECOStakedInfoResponse = Response<NECOStakedInfo>,
     ERC20TokenResponse = Response<ERC20Token>,
     ERC1155OwnershipResponse = Response<NecoNFTOwnership>,
-    ErrorReponse = Response<EmptyData>
+    ERC1155MetadataResponse = Response<NecoNFTMetadata>,
+    ErrorResponse = Response<EmptyData>
 )]
 pub struct Response<T: Serialize> {
     pub status: u16,

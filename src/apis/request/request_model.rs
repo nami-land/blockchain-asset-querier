@@ -20,3 +20,9 @@ pub struct GetNECOStakedInfoRequest {
     pub network: u8,
     pub public_address: String,
 }
+
+#[derive(Debug, Deserialize, IntoParams)]
+pub struct GetNFTMetadataRequest {
+    pub network: u8,
+    pub nft_id: String,
+}

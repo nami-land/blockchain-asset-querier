@@ -18,7 +18,7 @@ use crate::{
     ),
     responses(
         (status = 200, description = "Get ERC20 token balance successfully", body = ERC20TokenResponse),
-        (status = 400, description = "Bad request", body = ErrorReponse),
+        (status = 400, description = "Bad request", body = ErrorResponse),
     )
 )]
 pub async fn get_erc20_balance(

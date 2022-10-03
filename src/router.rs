@@ -3,7 +3,8 @@ use crate::apis::{response, v1};
 use crate::{
     apis::response::response_model::Response,
     apis::response::response_model::{
-        ERC1155OwnershipResponse, ERC20TokenResponse, ErrorReponse, NECOStakedInfoReponse,
+        ERC1155MetadataResponse, ERC1155OwnershipResponse, ERC20TokenResponse, ErrorResponse,
+        NECOStakedInfoResponse,
     },
     common::defines::NetworkType,
     models::{
@@ -53,21 +54,24 @@ async fn ping() -> &'static str {
         ping,
         v1::neco_stake::get_neco_staked_info,
         v1::erc20::get_erc20_balance,
-        v1::neco_nft::get_nft_ownership
+        v1::neco_nft::get_nft_ownership,
+        v1::neco_nft::get_nft_metadata
     ),
     components(
         schemas(
+            NetworkType,
             EmptyData,
             ERC20Token,
             NecoNFTTrait,
             NecoNFTMetadata,
             OwnershipItem,
             NecoNFTOwnership,
-            ErrorReponse,
+            ErrorResponse,
             NECOStakedInfo,
-            NECOStakedInfoReponse,
+            NECOStakedInfoResponse,
             ERC20TokenResponse,
-            ERC1155OwnershipResponse
+            ERC1155OwnershipResponse,
+            ERC1155MetadataResponse
         ),
     ),
     tags(
