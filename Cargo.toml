@@ -1,5 +1,5 @@
 [package]
-name = "blockchain-asset-observer"
+name = "blockchain-asset-querier"
 version = "0.1.0"
 edition = "2021"
 
