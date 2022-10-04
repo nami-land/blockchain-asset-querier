@@ -8,11 +8,15 @@ use crate::common::defines::{Error, BSC_MAIN_NETWORK_RPC, BSC_TEST_NETWORK_RPC};
 use common::defines::NetworkType;
 use common::provider::ProviderManager;
 use ethers::providers::{Http, Provider};
-use log::info;
+use log::{info, warn, LevelFilter};
 use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    pretty_env_logger::formatted_timed_builder()
+        .filter_level(LevelFilter::Info)
+        .init();
+
     let bsc_main_client =
         Provider::<Http>::try_from(BSC_MAIN_NETWORK_RPC).expect("get bsc mainnet provider failed.");
     let bsc_test_client =
