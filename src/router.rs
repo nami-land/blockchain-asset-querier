@@ -36,10 +36,10 @@ pub fn new_router() -> Router {
     let env_args: HashMap<String, String> = env::vars().collect();
     let env = env_args.get("env");
     match env {
-        Some(env) => router.merge(
-            SwaggerUi::new("/swagger-ui/*tail")
-                .url("/api-doc/openapi.json", RemoteApiDoc::openapi()),
-        ),
+        Some(env) => router.merge(SwaggerUi::new("/swagger-ui/*tail").url(
+            "/blockchain-asset-querier/api-doc/openapi.json",
+            RemoteApiDoc::openapi(),
+        )),
         None => {
             return router.merge(
                 SwaggerUi::new("/swagger-ui/*tail")
