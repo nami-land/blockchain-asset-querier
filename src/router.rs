@@ -33,7 +33,6 @@ pub fn new_router() -> Router {
         .route("/v1/erc20/balance", get(v1::erc20::get_erc20_balance));
 
     // add openapi support
-
     let env_args: HashMap<String, String> = env::vars().collect();
     let env = env_args.get("env");
     match env {

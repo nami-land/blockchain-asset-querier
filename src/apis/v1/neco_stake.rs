@@ -22,7 +22,7 @@ use crate::{
     )
 )]
 pub async fn get_neco_staked_info(
-    param: Path<GetNECOStakedInfoRequest>,
+    Path(param): Path<GetNECOStakedInfoRequest>,
 ) -> Json<Response<NECOStakedInfo>> {
     info!(
         "get_neco_staked_info - public_address: {:?}, network: {:?}",
