@@ -38,7 +38,7 @@ pub fn new_router() -> Router {
     match env {
         Some(env) => router.merge(
             SwaggerUi::new("/swagger-ui/*tail")
-                .url("/api-doc/openapi.json", LocalApiDoc::openapi())
+                .url("/api-doc/openapi.json", RemoteApiDoc::openapi())
                 .url(
                     "/blockchain-asset-querier/api-doc/openapi.json",
                     RemoteApiDoc::openapi(),
