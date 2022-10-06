@@ -54,3 +54,18 @@ pub struct NecoNFTOwnership {
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
 pub struct EmptyData {}
+
+#[derive(Debug, Deserialize)]
+pub struct AddressConfig {
+    pub bsc_test: Address,
+    pub bsc_main: Address,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Address {
+    pub neco: String,
+    pub nfish: String,
+    pub busd: String,
+    pub neco_nft: String,
+    pub stake_neco_for_fee: String,
+}

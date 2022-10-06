@@ -34,9 +34,9 @@ pub fn new_router() -> Router {
 
     // add openapi support
     let env_args: HashMap<String, String> = env::vars().collect();
-    let env = env_args.get("env");
+    let env = env_args.get("_env");
     match env {
-        Some(env) => router.merge(
+        Some(_) => router.merge(
             SwaggerUi::new("/swagger-ui/*tail")
                 .url("/api-doc/openapi.json", RemoteApiDoc::openapi())
                 .url(
