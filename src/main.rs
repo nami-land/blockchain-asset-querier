@@ -31,7 +31,6 @@ async fn main() -> Result<(), Error> {
 
     let address_content = fs::read_to_string("address.toml")?;
     let address: AddressConfig = toml::from_str(&address_content)?;
-    println!("address: {:?}", address);
     ADDRESS_MANAGER.get_or_init(|| address);
 
     let bsc_main_client =

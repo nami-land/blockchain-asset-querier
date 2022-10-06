@@ -306,7 +306,6 @@ dependencies = [
  "dotenv",
  "ethers",
  "ethers-core 0.17.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "lazy_static",
  "log",
  "once_cell",
  "pretty_env_logger",
