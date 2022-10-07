@@ -31,7 +31,7 @@ async fn main() -> Result<(), Error> {
 
     let address_content = fs::read_to_string("address.toml")?;
     let address: AddressConfig = toml::from_str(&address_content)?;
-    ADDRESS_MANAGER.get_or_init(|| address);
+    ADDRESS_MANAGER.set(address).unwrap();
 
     let bsc_main_client =
         Provider::<Http>::try_from(BSC_MAIN_NETWORK_RPC).expect("get bsc mainnet provider failed.");
