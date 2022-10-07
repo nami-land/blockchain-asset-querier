@@ -1,4 +1,3 @@
-use std::process::id;
 use std::{borrow::Borrow, collections::HashMap, sync::Arc};
 
 use crate::{
@@ -47,7 +46,7 @@ impl NecoNFTService {
 impl NecoNFTService {
     pub async fn get_nft_ownership(
         &self,
-        public_address: &str,
+        public_address: &String,
         game: &GameClient,
         network: &NetworkType,
     ) -> Result<NecoNFTOwnership, Error> {

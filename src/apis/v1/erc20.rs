@@ -3,22 +3,32 @@ use ethers::types::U256;
 use reqwest::StatusCode;
 
 use crate::{
-    apis::{
-        request::request_model::GetERC20BalanceRequest, response::response_model::NecoResponse,
-    },
+    apis::{request::request_model::GetERC20BalanceRequest, response::response_model::Response},
     common::defines::{ContractType, NetworkType},
     models::ERC20Token,
     services::erc20::ERC20Service,
 };
 
+#[utoipa::path(
+    get,
+    path = "/v1/erc20/balance",
+    tag = "ERC20",
+    params(
+        GetERC20BalanceRequest
+    ),
+    responses(
+        (status = 200, description = "Get ERC20 token balance successfully", body = ERC20TokenResponse),
+        (status = 400, description = "Bad request", body = ErrorResponse),
+    )
+)]
 pub async fn get_erc20_balance(
     Query(request): Query<GetERC20BalanceRequest>,
-) -> Json<NecoResponse<ERC20Token>> {
+) -> Json<Response<ERC20Token>> {
     let network = match request.network {
         0 => NetworkType::BSCMainNetwork,
         1 => NetworkType::BSCTestNetwork,
         _ => {
-            return NecoResponse::err(StatusCode::BAD_REQUEST, "network type error");
+            return Response::err(StatusCode::BAD_REQUEST, "network type error");
         }
     };
     let contract_type = match request.contract_type.as_str() {
@@ -26,7 +36,7 @@ pub async fn get_erc20_balance(
         "nfish" => ContractType::NFISH,
         "busd" => ContractType::BUSD,
         _ => {
-            return NecoResponse::err(StatusCode::BAD_REQUEST, "contract type error");
+            return Response::err(StatusCode::BAD_REQUEST, "contract type error");
         }
     };
 
@@ -43,7 +53,7 @@ pub async fn get_erc20_balance(
         .await
         .unwrap_or_else(|_| 0);
 
-    NecoResponse::ok(ERC20Token {
+    Response::ok(ERC20Token {
         symbol,
         decimal,
         amount: amount.to_string(),

@@ -32,10 +32,10 @@ RUN cargo build --release
 FROM gcr.io/distroless/cc-debian11
 
 # copy the binary from the builder stage
-COPY --from=builder /app/target/release/blockchain-asseter /usr/local/bin/blockchain-asseter
+COPY --from=builder /app/target/release/blockchain-asset-querier /usr/local/bin/blockchain-asset-querier
 
 EXPOSE 8080
 EXPOSE 8081
 
 # run the binary
-CMD ["blockchain-asseter"]
+CMD ["blockchain-asset-querier"]

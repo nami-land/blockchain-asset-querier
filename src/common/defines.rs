@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Formatter;
+use utoipa::ToSchema;
 
 pub type Error = Box<dyn std::error::Error + Sync + Send>;
 
 // define a enum for the blockchain type.
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Serialize, Deserialize, ToSchema)]
 pub enum NetworkType {
     BSCMainNetwork,
     BSCTestNetwork,

@@ -1,12 +1,12 @@
-# neco-blockchain-helper-service
+# Blockchain-asset-querier.
 
-Microservices for managing blockchain resources of Neco Fun
+Microservices for managing blockchain resources
 
 include features below:
-* Querying Neco NFT metadata.
-* Querying user ownership of NFT.
-* Querying NECO staked info for reducing withdrawal fee in Neco Fishing Game.
-* Querying ERC20 balance (NECO, NFISH, BUSD).
+* Query Neco NFT metadata.
+* Query user ownership of NFT.
+* Query NECO staked info for reducing withdrawal fee in Neco Fishing Game.
+* Query ERC20 balance (NECO, NFISH, BUSD).
 
 query urls:
 * ``/neco-staked-info`` get neco staked info
