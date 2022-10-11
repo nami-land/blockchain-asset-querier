@@ -1,6 +1,7 @@
-use crate::common::defines::NetworkType;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+
+use crate::common::defines::NetworkType;
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema)]
 pub struct ERC20Token {
@@ -10,6 +11,7 @@ pub struct ERC20Token {
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct NECOStakedInfo {
     pub public_address: String,
     pub staked_amount: String,
@@ -17,12 +19,14 @@ pub struct NECOStakedInfo {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all(deserialize = "snake_case", serialize = "camelCase"))]
 pub struct NecoNFTTrait {
     pub trait_type: String,
     pub value: String,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all(deserialize = "snake_case", serialize = "camelCase"))]
 pub struct NecoNFTMetadata {
     pub id: String,
     pub name: String,
@@ -38,6 +42,7 @@ pub struct NecoNFTMetadata {
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct OwnershipItem {
     pub nft_id: String,
     pub amount: u64,
@@ -45,6 +50,7 @@ pub struct OwnershipItem {
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct NecoNFTOwnership {
     pub public_address: String,
     pub network: NetworkType,
