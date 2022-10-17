@@ -34,12 +34,12 @@ pub fn new_router() -> Router {
             get(v1::neco_nft::get_nft_metadata),
         )
         .route("/v1/erc20/balance", get(v1::erc20::get_erc20_balance))
-        .layer(CorsLayer::new().allow_origin(Any).allow_methods([
-            Method::GET,
-            Method::POST,
-            Method::PUT,
-            Method::DELETE,
-        ]));
+        .layer(
+            CorsLayer::new()
+                .allow_origin(Any)
+                .allow_methods(Any)
+                .allow_headers(Any),
+        );
 
     // add openapi support
     let env_args: HashMap<String, String> = env::vars().collect();
