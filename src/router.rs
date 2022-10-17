@@ -1,6 +1,13 @@
 use std::collections::HashMap;
 use std::env;
 
+use axum::http::Method;
+use axum::{routing::get, Router};
+use tower_http::cors::{Any, CorsLayer};
+use utoipa::openapi::Server;
+use utoipa::{Modify, OpenApi};
+use utoipa_swagger_ui::SwaggerUi;
+
 use crate::apis::v1;
 use crate::{
     apis::response::response_model::{
@@ -13,10 +20,6 @@ use crate::{
         OwnershipItem,
     },
 };
-use axum::{routing::get, Router};
-use utoipa::openapi::Server;
-use utoipa::{Modify, OpenApi};
-use utoipa_swagger_ui::SwaggerUi;
 
 pub fn new_router() -> Router {
     let router = Router::new()
@@ -30,7 +33,13 @@ pub fn new_router() -> Router {
             "/v1/nft/metadata/:network/:nft_id",
             get(v1::neco_nft::get_nft_metadata),
         )
-        .route("/v1/erc20/balance", get(v1::erc20::get_erc20_balance));
+        .route("/v1/erc20/balance", get(v1::erc20::get_erc20_balance))
+        .layer(CorsLayer::new().allow_origin(Any).allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::DELETE,
+        ]));
 
     // add openapi support
     let env_args: HashMap<String, String> = env::vars().collect();
