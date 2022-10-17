@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use std::env;
 
-use axum::http::Method;
 use axum::{routing::get, Router};
+use reqwest::Method;
 use tower_http::cors::{Any, CorsLayer};
 use utoipa::openapi::Server;
 use utoipa::{Modify, OpenApi};
@@ -36,9 +36,9 @@ pub fn new_router() -> Router {
         .route("/v1/erc20/balance", get(v1::erc20::get_erc20_balance))
         .layer(
             CorsLayer::new()
-                .allow_origin(Any)
                 .allow_methods(Any)
-                .allow_headers(Any),
+                .allow_headers(Any)
+                .allow_origin(Any),
         );
 
     // add openapi support
