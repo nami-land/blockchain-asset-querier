@@ -31,11 +31,13 @@ RUN cargo build --release
 # use google's distroless image as the base image
 FROM gcr.io/distroless/cc-debian11
 
+WORKDIR /app
 # copy the binary from the builder stage
-COPY --from=builder /app/target/release/blockchain-asset-querier /usr/local/bin/blockchain-asset-querier
+COPY --from=builder /app/target/release/blockchain-asset-querier /app/blockchain-asset-querier
+COPY --from=builder /app/address.toml /app/address.toml
 
 EXPOSE 8080
 EXPOSE 8081
 
 # run the binary
-CMD ["blockchain-asset-querier"]
+CMD ["./blockchain-asset-querier"]
