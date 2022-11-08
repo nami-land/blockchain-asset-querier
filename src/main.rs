@@ -24,10 +24,13 @@ async fn main() -> Result<(), Error> {
     pretty_env_logger::formatted_timed_builder()
         .filter_level(LevelFilter::Info)
         .init();
-
-    let address_content = fs::read_to_string("address.toml")?;
-    let address: AddressConfig = toml::from_str(&address_content)?;
-    ADDRESS_MANAGER.set(address).unwrap();
+    let current_dir = std::env::current_dir()?;
+    info!("{:?}", current_dir);
+    let address_content = fs::read_to_string("./address.toml").expect("no address config");
+    let address: AddressConfig = toml::from_str(&address_content).expect("invalid address config");
+    ADDRESS_MANAGER
+        .set(address)
+        .expect("set address config failed");
 
     let bsc_main_client =
         Provider::<Http>::try_from(BSC_MAIN_NETWORK_RPC).expect("get bsc mainnet provider failed.");
