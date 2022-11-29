@@ -4,7 +4,7 @@ use reqwest::StatusCode;
 
 use crate::{
     apis::{request::request_model::GetERC20BalanceRequest, response::response_model::Response},
-    common::defines::{ContractType, NetworkType},
+    common::defines::{NetworkType, SupportedContractType},
     models::ERC20Token,
     services::erc20::ERC20Service,
 };
@@ -24,17 +24,16 @@ use crate::{
 pub async fn get_erc20_balance(
     Query(request): Query<GetERC20BalanceRequest>,
 ) -> Json<Response<ERC20Token>> {
-    let network = match request.network {
-        0 => NetworkType::BSCMainNetwork,
-        1 => NetworkType::BSCTestNetwork,
+    let network = match request.chain_id {
+        1 => NetworkType::EthereumMainnet,
+        5 => NetworkType::GoerliTestnet,
         _ => {
-            return Response::err(StatusCode::BAD_REQUEST, "network type error");
+            return Response::err(StatusCode::BAD_REQUEST, "chain id is not supported");
         }
     };
     let contract_type = match request.contract_type.as_str() {
-        "neco" => ContractType::NECO,
-        "nfish" => ContractType::NFISH,
-        "busd" => ContractType::BUSD,
+        "neco" => SupportedContractType::NAMIX,
+        "nfish" => SupportedContractType::FISHX,
         _ => {
             return Response::err(StatusCode::BAD_REQUEST, "contract type error");
         }

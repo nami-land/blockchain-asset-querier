@@ -12,7 +12,7 @@ pub struct ERC20Token {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct NECOStakedInfo {
+pub struct NamiXStakedInfo {
     pub public_address: String,
     pub staked_amount: String,
     pub staked_time: String,
@@ -20,25 +20,22 @@ pub struct NECOStakedInfo {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all(deserialize = "snake_case", serialize = "camelCase"))]
-pub struct NecoNFTTrait {
+pub struct NFTTrait {
     pub trait_type: String,
     pub value: String,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all(deserialize = "snake_case", serialize = "camelCase"))]
-pub struct NecoNFTMetadata {
+pub struct NamiLandERC1155NFTMetadata {
     pub id: String,
     pub name: String,
     pub description: String,
-    #[serde(alias = "nftType1")]
     pub nft_type1: String,
-    #[serde(alias = "nftType2")]
     pub nft_type2: String,
-    pub animation_url: String,
     pub image: String,
     pub external_url: String,
-    pub attributes: Vec<NecoNFTTrait>,
+    pub attributes: Vec<NFTTrait>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
@@ -46,12 +43,12 @@ pub struct NecoNFTMetadata {
 pub struct OwnershipItem {
     pub nft_id: String,
     pub amount: u64,
-    pub nft_metadata: NecoNFTMetadata,
+    pub nft_metadata: NamiLandERC1155NFTMetadata,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct NecoNFTOwnership {
+pub struct NamiLandNFTOwnership {
     pub public_address: String,
     pub network: NetworkType,
     pub contract_address: String,

@@ -1,84 +1,91 @@
-use std::{borrow::Borrow, collections::HashMap, sync::Arc};
-
 use crate::{
     common::{
         address::get_contract_address,
-        defines::{ContractType, Error, GameClient, NetworkType, NECO_FISHING_NFT_IDS},
+        defines::{
+            Error, GameClient, NetworkType, SupportedContractType, NAMILAND_GAME_ITEM_NFT_IDS,
+        },
         provider::ProviderManager,
     },
-    models::{NecoNFTMetadata, NecoNFTOwnership, OwnershipItem},
+    models::{NamiLandERC1155NFTMetadata, NamiLandNFTOwnership, OwnershipItem},
 };
 use ethers::{
     prelude::{abigen, Lazy},
     providers::{Http, Provider},
     types::{Address, U256},
 };
+use std::{borrow::Borrow, collections::HashMap, sync::Arc};
 use tokio::sync::{mpsc, Mutex};
 
 abigen!(
-    NecoNFTContract,
-    "./src/abis/neco_nft.json",
+    NamiLandERC1155Contract,
+    "./src/abi/namiland-game-item.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
 static NFT_URL_CACHES: Lazy<Mutex<HashMap<U256, String>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
-static NFT_METADATA_CACHES: Lazy<Mutex<HashMap<U256, NecoNFTMetadata>>> =
+static NFT_METADATA_CACHES: Lazy<Mutex<HashMap<U256, NamiLandERC1155NFTMetadata>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
 
 #[derive(Debug, Clone)]
-pub struct NecoNFTService {
-    contract: NecoNFTContract<Provider<Http>>,
+pub struct NamiLandERC1155Service {
+    pub contract: NamiLandERC1155Contract<Provider<Http>>,
 }
 
-impl NecoNFTService {
-    pub fn new(network: NetworkType) -> NecoNFTService {
-        let client = ProviderManager::instance()
-            .get_provider(network)
-            .expect("get provider failed");
-        let address = get_contract_address(&ContractType::NecoNFT, &network)
-            .expect("get contract address failed");
-        let contract = NecoNFTContract::new(address, client.clone());
-        NecoNFTService { contract }
+impl NamiLandERC1155Service {
+    pub fn new(network: NetworkType) -> Result<NamiLandERC1155Service, Error> {
+        let client = match ProviderManager::instance().get_provider(network) {
+            Some(client) => client,
+            None => return Err("get provider failed".into()),
+        };
+        let address = get_contract_address(SupportedContractType::NamiLandGameItemNFT, network)?;
+        let contract = NamiLandERC1155Contract::new(address, client.clone());
+        Ok(NamiLandERC1155Service { contract })
     }
 }
 
-impl NecoNFTService {
+impl NamiLandERC1155Service {
     pub async fn get_nft_ownership(
         &self,
-        public_address: &String,
-        game: &GameClient,
-        network: &NetworkType,
-    ) -> Result<NecoNFTOwnership, Error> {
-        let contract_address = get_contract_address(&ContractType::NecoNFT, network)?.to_string();
-        let ownership_items = self.get_ownership_items(public_address, game).await?;
-        Ok(NecoNFTOwnership {
-            public_address: public_address.to_owned(),
+        public_address: Address,
+        game_client: GameClient,
+        network: NetworkType,
+    ) -> Result<NamiLandNFTOwnership, Error> {
+        let ownership_items = self
+            .get_ownership_items(public_address, game_client)
+            .await?;
+
+        let contract_address =
+            get_contract_address(SupportedContractType::NamiLandGameItemNFT, network)?.to_string();
+
+        Ok(NamiLandNFTOwnership {
+            public_address: format!("{:?}", public_address),
             network: network.to_owned(),
             contract_address,
             ownerships: ownership_items,
         })
     }
 
+    // Get ownership items
     pub async fn get_ownership_items(
         &self,
-        public_address: &str,
-        game: &GameClient,
+        public_address: Address,
+        game_client: GameClient,
     ) -> Result<Vec<OwnershipItem>, Error> {
         let neco_nft = Arc::new(self.clone());
-        let address = public_address.parse::<Address>()?;
         let (tx, mut rx) = mpsc::channel(4096);
 
-        let mut ids = vec![];
-        match game {
-            GameClient::NecoFishing => {
-                ids = vec![];
-                NECO_FISHING_NFT_IDS.map(|id| ids.push(id));
+        let nft_ids: Vec<i32> = match game_client {
+            GameClient::NamiLand => {
+                let mut ids: Vec<i32> = vec![];
+                NAMILAND_GAME_ITEM_NFT_IDS
+                    .iter()
+                    .for_each(|id| ids.push(*id));
+                ids
             }
-        }
-        let ids_copy = ids.clone();
-        let ids_iter = ids.into_iter();
-        for nft_id in ids_iter {
+        };
+
+        nft_ids.clone().into_iter().for_each(|id: i32| {
             let neco_nft_copy = neco_nft.clone();
             let tx_copy = tx.clone();
 
@@ -86,36 +93,33 @@ impl NecoNFTService {
                 let balance = (*neco_nft_copy)
                     .borrow()
                     .contract
-                    .balance_of(
-                        address.clone(),
-                        U256::from_dec_str(&nft_id.to_string()).unwrap(),
-                    )
+                    .balance_of(public_address.clone(), U256::from(id))
                     .call()
                     .await
                     .unwrap_or_default();
 
                 let metadata = match balance.as_u64() {
-                    0 => NecoNFTMetadata::default(),
+                    0 => NamiLandERC1155NFTMetadata::default(),
                     _ => (*neco_nft_copy)
                         .borrow()
-                        .get_metadata_by_id(&U256::from_dec_str(&nft_id.to_string()).unwrap())
+                        .get_metadata_by_nft_id(&U256::from(id))
                         .await
-                        .unwrap_or_else(|_| NecoNFTMetadata::default()),
+                        .unwrap_or_else(|_| NamiLandERC1155NFTMetadata::default()),
                 };
 
                 tx_copy
                     .send(OwnershipItem {
-                        nft_id: nft_id.to_string(),
+                        nft_id: id.to_string(),
                         amount: balance.as_u64(),
                         nft_metadata: metadata,
                     })
                     .await
                     .expect("TODO: panic message");
             });
-        }
+        });
 
         let mut ownership_items: Vec<OwnershipItem> = vec![];
-        for _ in 0..ids_copy.len() {
+        for _ in 0..nft_ids.len() {
             if let Some(ownership_item) = rx.recv().await {
                 if ownership_item.amount != 0 {
                     ownership_items.push(ownership_item);
@@ -126,20 +130,23 @@ impl NecoNFTService {
         Ok(ownership_items)
     }
 
-    pub async fn get_metadata_by_id(&self, nft_id: &U256) -> Result<NecoNFTMetadata, Error> {
+    // get nft metadata by nft id
+    pub async fn get_metadata_by_nft_id(
+        &self,
+        nft_id: &U256,
+    ) -> Result<NamiLandERC1155NFTMetadata, Error> {
         let map = NFT_METADATA_CACHES.lock().await;
         let result = map.get(&nft_id).cloned();
-        std::mem::drop(map);
+        drop(map);
 
         match result {
             Some(metadata) => Ok(metadata),
             None => {
                 // 1. get nft url
                 let url = self.get_nft_url(nft_id).await?;
-                let metadata_url = format!("https://mygateway.mypinata.cloud/{}", url);
                 let requester = reqwest::Client::new();
-                let result = requester.get(metadata_url).send().await?.text().await?;
-                let metadata: NecoNFTMetadata = serde_json::from_str(&result)?;
+                let result = requester.get(url).send().await?.text().await?;
+                let metadata: NamiLandERC1155NFTMetadata = serde_json::from_str(&result)?;
                 NFT_METADATA_CACHES
                     .lock()
                     .await
@@ -149,10 +156,11 @@ impl NecoNFTService {
         }
     }
 
+    // get nft uri.
     pub async fn get_nft_url(&self, nft_id: &U256) -> Result<String, Error> {
         let map = NFT_URL_CACHES.lock().await;
         let result = map.get(&nft_id).cloned();
-        std::mem::drop(map);
+        drop(map);
 
         match result {
             Some(url) => Ok(url),
@@ -170,14 +178,18 @@ impl NecoNFTService {
 
 #[cfg(test)]
 mod tests {
-    use crate::{common::defines::ContractType, services::neco_nft::NecoNFTService};
     use ethers::types::U256;
+
+    use crate::services::namiland_erc1155::NamiLandERC1155Service;
 
     #[test]
     fn test_get_nft_metadata() {
-        let neco_nft = NecoNFTService::new(crate::common::defines::NetworkType::BSCTestNetwork);
+        let neco_nft =
+            NamiLandERC1155Service::new(crate::common::defines::NetworkType::BSCTestNetwork);
         let metadata = tokio_test::block_on(
-            neco_nft.get_metadata_by_id(&U256::from_dec_str("10001").unwrap()),
+            neco_nft
+                .unwrap()
+                .get_metadata_by_nft_id(&U256::from_dec_str("10001").unwrap()),
         );
         println!("{:?}", metadata);
     }

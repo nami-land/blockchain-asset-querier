@@ -1,6 +1,6 @@
 use crate::common::{
     address::get_contract_address,
-    defines::{ContractType, Error, NetworkType},
+    defines::{Error, NetworkType, SupportedContractType},
     provider::ProviderManager,
 };
 use ethers::{
@@ -11,7 +11,7 @@ use ethers::{
 
 abigen!(
     ERC20Contract,
-    "./src/abis/erc20.json",
+    "./src/abi/erc20.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
@@ -21,12 +21,12 @@ pub struct ERC20Service {
 }
 
 impl ERC20Service {
-    pub fn new(contract_type: ContractType, network: NetworkType) -> ERC20Service {
+    pub fn new(contract_type: SupportedContractType, network: NetworkType) -> ERC20Service {
         let client = ProviderManager::instance()
             .get_provider(network)
             .expect("get provider failed");
         let address =
-            get_contract_address(&contract_type, &network).expect("get contract address failed");
+            get_contract_address(contract_type, network).expect("get contract address failed");
         let contract = ERC20Contract::new(address, client.clone());
         ERC20Service { contract }
     }
