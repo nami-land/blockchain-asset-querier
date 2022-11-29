@@ -3,7 +3,7 @@ name: Dev CI to Docker Hub
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   build:
