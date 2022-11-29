@@ -34,7 +34,6 @@ FROM gcr.io/distroless/cc-debian11
 WORKDIR /app
 # copy the binary from the builder stage
 COPY --from=builder /app/target/release/blockchain-asset-querier /app/blockchain-asset-querier
-COPY --from=builder /app/address.toml /app/address.toml
 
 EXPOSE 8080
 EXPOSE 8081
