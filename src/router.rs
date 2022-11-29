@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use std::env;
 
 use axum::{routing::get, Router};
-use reqwest::Method;
 use tower_http::cors::{Any, CorsLayer};
 use utoipa::openapi::Server;
 use utoipa::{Modify, OpenApi};
@@ -16,8 +15,8 @@ use crate::{
     },
     common::defines::NetworkType,
     models::{
-        ERC20Token, EmptyData, NECOStakedInfo, NecoNFTMetadata, NecoNFTOwnership, NecoNFTTrait,
-        OwnershipItem,
+        ERC20Token, EmptyData, NFTTrait, NamiLandERC1155NFTMetadata, NamiLandNFTOwnership,
+        NamiXStakedInfo, OwnershipItem,
     },
 };
 
@@ -28,10 +27,13 @@ pub fn new_router() -> Router {
             "/v1/neco-staked-info/:network/:public_address",
             get(v1::neco_stake::get_neco_staked_info),
         )
-        .route("/v1/nft/ownership", get(v1::neco_nft::get_nft_ownership))
         .route(
-            "/v1/nft/metadata/:network/:nft_id",
-            get(v1::neco_nft::get_nft_metadata),
+            "/v1/namiland-game-item-nft/ownership",
+            get(v1::namiland_erc1155::get_nft_ownership),
+        )
+        .route(
+            "/v1/namiland-game-item-nft/metadata/:chain_id/:nft_id",
+            get(v1::namiland_erc1155::get_nft_metadata),
         )
         .route("/v1/erc20/balance", get(v1::erc20::get_erc20_balance))
         .layer(
@@ -43,10 +45,10 @@ pub fn new_router() -> Router {
 
     // add openapi support
     let env_args: HashMap<String, String> = env::vars().collect();
-    let env = env_args.get("_env");
+    let env = env_args.get("env");
     match env {
         Some(_) => router.merge(
-            SwaggerUi::new("/swagger-ui/*tail")
+            SwaggerUi::new("/swagger-ui")
                 .url("/api-doc/openapi.json", RemoteApiDoc::openapi())
                 .url(
                     "/blockchain-asset-querier/api-doc/openapi.json",
@@ -55,8 +57,7 @@ pub fn new_router() -> Router {
         ),
         None => {
             return router.merge(
-                SwaggerUi::new("/swagger-ui/*tail")
-                    .url("/api-doc/openapi.json", LocalApiDoc::openapi()),
+                SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", LocalApiDoc::openapi()),
             );
         }
     }
@@ -81,20 +82,20 @@ async fn ping() -> &'static str {
         ping,
         v1::neco_stake::get_neco_staked_info,
         v1::erc20::get_erc20_balance,
-        v1::neco_nft::get_nft_ownership,
-        v1::neco_nft::get_nft_metadata
+        v1::namiland_erc1155::get_nft_ownership,
+        v1::namiland_erc1155::get_nft_metadata
     ),
     components(
         schemas(
             NetworkType,
             EmptyData,
             ERC20Token,
-            NecoNFTTrait,
-            NecoNFTMetadata,
+            NFTTrait,
+            NamiLandERC1155NFTMetadata,
             OwnershipItem,
-            NecoNFTOwnership,
+            NamiLandNFTOwnership,
             ErrorResponse,
-            NECOStakedInfo,
+            NamiXStakedInfo,
             NECOStakedInfoResponse,
             ERC20TokenResponse,
             ERC1155OwnershipResponse,
@@ -122,20 +123,20 @@ impl Modify for RemoteApiServer {
         ping,
         v1::neco_stake::get_neco_staked_info,
         v1::erc20::get_erc20_balance,
-        v1::neco_nft::get_nft_ownership,
-        v1::neco_nft::get_nft_metadata
+        v1::namiland_erc1155::get_nft_ownership,
+        v1::namiland_erc1155::get_nft_metadata
     ),
     components(
         schemas(
             NetworkType,
             EmptyData,
             ERC20Token,
-            NecoNFTTrait,
-            NecoNFTMetadata,
+            NFTTrait,
+            NamiLandERC1155NFTMetadata,
             OwnershipItem,
-            NecoNFTOwnership,
+            NamiLandNFTOwnership,
             ErrorResponse,
-            NECOStakedInfo,
+            NamiXStakedInfo,
             NECOStakedInfoResponse,
             ERC20TokenResponse,
             ERC1155OwnershipResponse,

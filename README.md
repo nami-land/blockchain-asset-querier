@@ -1,4 +1,4 @@
-# Blockchain-asset-querier.
+# Blockchain-asset-querier
 
 NamiLand Microservices for managing blockchain resources
 
@@ -16,3 +16,5 @@ query urls:
 * ``/nft/metadata`` get nft metadata by nft in
 * ``/erc20/balance`` get erc20 token balance
 
+Todo
+need to change name of Smart Contract to NamiLand

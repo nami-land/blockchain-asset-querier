@@ -10,7 +10,7 @@ tokio = { version = "1.21.0", features = ["full"] }
 # parse json
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-axum = "0.5.16"
+axum = "0.6.0"
 
 # for loggers
 log = { version = "0.4", features = ["max_level_debug"] }
@@ -18,10 +18,10 @@ pretty_env_logger = "0.4"
 
 # Blockchain related
 ethers = { git = "https://github.com/gakonst/ethers-rs" }
-ethers-core = "0.17.0"
+ethers-core = "1.0.0"
 tokio-test = "0.4.2"
 utoipa = { version = "2", features = ["axum_extras"] }
-utoipa-swagger-ui = { version = "2", features = ["axum"] }
+utoipa-swagger-ui = { version = "3.0.1", features = ["axum"] }
 dotenv = "0.15.0"
 once_cell = "1.14.0"
 async-trait = "0.1.51"
